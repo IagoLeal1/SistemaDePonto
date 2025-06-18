@@ -1,0 +1,106 @@
+/* app/admin/employee/employeeHistory.module.scss */
+
+.employeeHistoryContainer {
+  padding: 30px;
+  background-color: #f8f9fa;
+  min-height: 100vh;
+  font-family: 'Arial', sans-serif;
+}
+
+.title {
+  color: #2c3e50;
+  margin-bottom: 10px;
+  font-size: 2.2em;
+}
+
+.subtitle {
+  color: #555;
+  margin-bottom: 30px;
+  font-size: 1.1em;
+}
+
+.loadingContainer, .errorContainer, .noRecordsMessage {
+  text-align: center;
+  padding: 50px;
+  font-size: 1.2em;
+  color: #666;
+}
+
+.errorContainer {
+  color: #dc3545;
+}
+
+/* New: Filter Container Styles */
+.filterContainer {
+  display: flex;
+  flex-wrap: wrap; /* Permite que os itens quebrem a linha em telas menores */
+  gap: 15px; /* Espaçamento entre os itens */
+  align-items: center;
+  margin-bottom: 30px;
+  padding: 20px;
+  background-color: #e9ecef; /* Um tom mais claro para o fundo do filtro */
+  border-radius: 8px;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
+
+  label {
+    font-weight: bold;
+    color: #343a40;
+    white-space: nowrap; /* Impede que o label quebre a linha */
+  }
+
+  .dateInput {
+    padding: 10px;
+    border: 1px solid #ced4da;
+    border-radius: 5px;
+    font-size: 1em;
+    flex-grow: 1; /* Permite que o input cresça */
+    max-width: 180px; /* Limita largura em telas maiores */
+
+    &:focus {
+      border-color: #007bff;
+      outline: none;
+      box-shadow: 0 0 0 0.2rem rgba(0, 123, 255, 0.25);
+    }
+  }
+
+  .applyFilterButton {
+    background-color: #28a745; /* Verde para o botão de aplicar */
+    color: white;
+    padding: 10px 20px;
+    border: none;
+    border-radius: 5px;
+    font-size: 1em;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+
+    &:hover {
+      background-color: #218838; /* Verde mais escuro no hover */
+    }
+
+    &:disabled {
+      background-color: #b3e0c0;
+      cursor: not-allowed;
+    }
+  }
+}
+
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+  .employeeHistoryContainer {
+    padding: 20px;
+  }
+  .title {
+    font-size: 1.8em;
+  }
+  .subtitle {
+    font-size: 1em;
+  }
+  .filterContainer {
+    flex-direction: column; /* Empilha os itens em telas pequenas */
+    align-items: stretch; /* Estica os inputs */
+    .dateInput, .applyFilterButton {
+      max-width: 100%; /* Permite ocupar toda a largura */
+    }
+  }
+}

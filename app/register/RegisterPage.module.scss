@@ -1,0 +1,131 @@
+// app/register/RegisterPage.module.scss
+
+.registerContainer {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: 100vh;
+  padding: 20px;
+  background-color: #f0f2f5; /* Light background */
+  font-family: 'Arial', sans-serif;
+}
+
+.title {
+  color: #333;
+  margin-bottom: 30px;
+  font-size: 2.2em;
+  text-align: center;
+}
+
+.form {
+  background-color: #fff;
+  padding: 40px;
+  border-radius: 8px;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1); /* Soft shadow */
+  width: 100%;
+  max-width: 450px; /* Increased max-width slightly */
+  display: flex;
+  flex-direction: column;
+  gap: 20px; /* Space between form groups */
+}
+
+.formGroup {
+  display: flex;
+  flex-direction: column;
+
+  label {
+    margin-bottom: 8px;
+    color: #555;
+    font-weight: bold;
+    font-size: 0.95em;
+  }
+}
+
+.inputField {
+  padding: 12px;
+  border: 1px solid #ddd;
+  border-radius: 5px;
+  font-size: 1em;
+  transition: border-color 0.3s ease; /* Smooth transition for focus */
+
+  &:focus {
+    border-color: #007bff; /* Primary color border on focus */
+    outline: none; /* Remove default outline */
+  }
+
+  &:disabled {
+    background-color: #e9ecef; /* Lighter background for disabled */
+    cursor: not-allowed;
+  }
+}
+
+.registerButton {
+  background-color: #007bff; /* Primary button color */
+  color: white;
+  padding: 12px 20px;
+  border: none;
+  border-radius: 5px;
+  font-size: 1.1em;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+
+  &:hover:not(:disabled) {
+    background-color: #0056b3; /* Darker on hover */
+  }
+
+  &:disabled {
+    background-color: #a0c9f1; /* Lighter when disabled */
+    cursor: not-allowed;
+  }
+}
+
+.errorMessage {
+  color: #dc3545; /* Red for errors */
+  background-color: #f8d7da; /* Light red background */
+  border: 1px solid #f5c6cb;
+  padding: 10px;
+  border-radius: 5px;
+  margin-top: -10px; /* Adjust spacing */
+  font-size: 0.9em;
+}
+
+.successMessage {
+  color: #28a745; /* Green for success */
+  background-color: #d4edda; /* Light green background */
+  border: 1px solid #c3e6cb;
+  padding: 10px;
+  border-radius: 5px;
+  margin-top: -10px;
+  font-size: 0.9em;
+}
+
+.loginLink {
+  margin-top: 20px;
+  color: #555;
+  text-align: center;
+
+  a {
+    color: #007bff; /* Link color */
+    text-decoration: none;
+    font-weight: bold;
+
+    &:hover {
+      text-decoration: underline;
+    }
+  }
+}
+
+/* Basic responsiveness */
+@media (max-width: 600px) {
+  .form {
+    padding: 25px;
+  }
+  .title {
+    font-size: 1.8em;
+  }
+  .inputField, .registerButton {
+    padding: 10px;
+    font-size: 0.95em;
+  }
+}

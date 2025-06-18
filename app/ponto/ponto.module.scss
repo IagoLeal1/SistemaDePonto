@@ -1,0 +1,178 @@
+/* app/ponto/ponto.module.scss */
+
+.pontoContainer {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: 100vh;
+  padding: 20px;
+  background-color: #f0f2f5;
+  font-family: 'Arial', sans-serif;
+  text-align: center;
+}
+
+.title {
+  color: #333;
+  margin-bottom: 10px;
+  font-size: 2.5em;
+}
+
+.welcomeMessage {
+  color: #666;
+  margin-bottom: 30px;
+  font-size: 1.2em;
+}
+
+.lastBatidaInfo {
+  background-color: #ffffff;
+  padding: 20px;
+  border-radius: 8px;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.08);
+  margin-bottom: 30px;
+  display: flex;
+  align-items: center;
+  gap: 15px;
+  font-size: 1.1em;
+  color: #444;
+  width: 100%;
+  max-width: 500px;
+  justify-content: center;
+
+  .infoIcon {
+    font-size: 1.5em;
+    color: #007bff;
+  }
+}
+
+.errorMessage {
+  color: #dc3545;
+  background-color: #f8d7da;
+  border: 1px solid #f5c6cb;
+  padding: 10px;
+  border-radius: 5px;
+  margin-bottom: 20px;
+  width: 100%;
+  max-width: 500px;
+}
+
+.successMessage {
+  color: #28a745;
+  background-color: #d4edda;
+  border: 1px solid #c3e6cb;
+  padding: 10px;
+  border-radius: 5px;
+  margin-bottom: 20px;
+  width: 100%;
+  max-width: 500px;
+}
+
+.buttonGroup {
+  display: flex;
+  flex-wrap: wrap; // Permite quebrar linha em telas menores
+  gap: 15px;
+  margin-bottom: 30px;
+  justify-content: center;
+  width: 100%;
+  max-width: 700px;
+}
+
+.pontoButton {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 15px 25px;
+  border: none;
+  border-radius: 8px;
+  font-size: 1.1em;
+  font-weight: bold;
+  cursor: pointer;
+  transition: background-color 0.3s ease, transform 0.2s ease;
+  color: white;
+  min-width: 200px; // Garante um tamanho mínimo
+  flex-grow: 1; // Permite que o botão cresça para preencher o espaço
+
+  .buttonIcon {
+    margin-right: 10px;
+    font-size: 1.3em;
+  }
+
+  &:disabled {
+    background-color: #cccccc !important;
+    cursor: not-allowed;
+    transform: scale(1);
+    opacity: 0.7;
+  }
+}
+
+.entradaButton {
+  background-color: #28a745; // Verde
+  &:hover:not(:disabled) {
+    background-color: #218838;
+    transform: scale(1.02);
+  }
+}
+
+.inicio_almocoButton,
+.fim_almocoButton {
+  background-color: #ffc107; // Amarelo/Laranja
+  color: #333; // Texto escuro para contraste
+  &:hover:not(:disabled) {
+    background-color: #e0a800;
+    transform: scale(1.02);
+  }
+}
+
+.saidaButton {
+  background-color: #dc3545; // Vermelho
+  &:hover:not(:disabled) {
+    background-color: #c82333;
+    transform: scale(1.02);
+  }
+}
+
+.logoutButton {
+  background-color: #6c757d; // Cinza
+  color: white;
+  padding: 12px 25px;
+  border: none;
+  border-radius: 8px;
+  font-size: 1em;
+  font-weight: bold;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+
+  &:hover:not(:disabled) {
+    background-color: #5a6268;
+  }
+
+  &:disabled {
+    background-color: #a0a0a0;
+    cursor: not-allowed;
+  }
+
+  .buttonIcon {
+    font-size: 1.1em;
+  }
+}
+
+/* Responsividade básica */
+@media (max-width: 768px) {
+  .buttonGroup {
+    flex-direction: column;
+    width: 90%;
+  }
+  .pontoButton {
+    min-width: unset; // Remove min-width para mobile
+  }
+  .title {
+    font-size: 2em;
+  }
+  .welcomeMessage {
+    font-size: 1em;
+  }
+}

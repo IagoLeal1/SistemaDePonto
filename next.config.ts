@@ -1,7 +1,6 @@
-import type { NextConfig } from "next";
-
-const nextConfig: NextConfig = {
-  /* config options here */
+/** @type {import('next').NextConfig} */
+const nextConfig = {
+  // Deixe este arquivo simples, sem configurações de sassOptions
 };
 
-export default nextConfig;
+module.exports = nextConfig;

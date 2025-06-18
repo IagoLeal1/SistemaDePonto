@@ -1,0 +1,140 @@
+@import "styles/variables"; // Importa suas variáveis globais
+
+.loginContainer {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: 100vh;
+  // Gradiente mais suave e moderno
+  background: linear-gradient(135deg, #e0f2f7, #d0e8f0);
+  width: 100%;
+  padding: 20px; // Adiciona padding para telas pequenas
+  box-sizing: border-box; // Garante que padding não cause overflow
+}
+
+.loginCard {
+  background-color: $background-card;
+  padding: 40px; // Aumentado para um feel mais premium
+  border-radius: 12px; // Cantos mais arredondados
+  box-shadow: 0 12px 30px rgba(0, 0, 0, 0.1); // Sombra um pouco mais proeminente, mas ainda suave
+  width: 100%;
+  max-width: 420px; // Ligeiramente maior para uma presença mais robusta
+  text-align: center;
+  box-sizing: border-box;
+  // Transição suave para um efeito de "entrada"
+  opacity: 0;
+  transform: translateY(20px);
+  animation: fadeIn 0.6s ease-out forwards;
+}
+
+// Animação para a entrada suave do card
+@keyframes fadeIn {
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.title {
+  color: $primary-color;
+  margin-bottom: 30px; // Mais espaço
+  font-size: 2.5em; // Maior e mais impactante
+  font-weight: 700; // Mais bold
+  letter-spacing: -0.03em; // Ajuste para tipografia moderna
+}
+
+.formGroup {
+  margin-bottom: 22px; // Mais espaço entre os grupos
+  text-align: left;
+}
+
+.formGroup label {
+  display: block;
+  margin-bottom: 8px; // Mais espaço
+  font-weight: 600; // Mais bold
+  color: $text-color; // Usar a cor de texto principal
+  font-size: 1em; // Tamanho padrão
+}
+
+.formGroup input {
+  width: 100%;
+  padding: 14px 16px; // Mais padding para maior área de clique/toque
+  border: 1px solid $border-color;
+  border-radius: 8px; // Cantos mais suaves
+  font-size: 1.05em;
+  box-sizing: border-box;
+  transition: border-color 0.2s ease, box-shadow 0.2s ease;
+  background-color: #fcfdff; // Um fundo levemente diferente para o input
+
+  &:focus {
+    border-color: darken($primary-color, 5%); // Borda ligeiramente mais escura
+    outline: none;
+    box-shadow: 0 0 0 3px rgba($primary-color, 0.25); // Sombra mais pronunciada ao focar
+    background-color: #ffffff; // Fundo branco ao focar
+  }
+}
+
+.loginButton {
+  background-color: $primary-color;
+  color: white;
+  padding: 15px 30px; // Mais padding para um botão mais robusto
+  border: none;
+  border-radius: 8px; // Cantos mais suaves
+  font-size: 1.1em; // Um pouco maior
+  font-weight: 600; // Mais bold
+  cursor: pointer;
+  width: 100%;
+  margin-top: 25px; // Mais espaço antes do botão
+  transition: background-color 0.2s ease, transform 0.1s ease, box-shadow 0.2s ease;
+  box-shadow: 0 4px 10px rgba($primary-color, 0.2); // Sombra para o botão
+
+  &:hover {
+    background-color: darken($primary-color, 8%); // Darken um pouco menos agressivo
+    transform: translateY(-2px); // Efeito 3D sutil
+    box-shadow: 0 6px 15px rgba($primary-color, 0.3); // Sombra aumentada no hover
+  }
+
+  &:active {
+    transform: translateY(0); // Retorna à posição original
+    box-shadow: 0 2px 5px rgba($primary-color, 0.2); // Sombra reduzida
+  }
+}
+
+.forgotPassword {
+  display: block;
+  margin-top: 20px; // Mais espaço
+  font-size: 0.95em; // Ligeiramente maior
+  color: $light-text-color;
+  text-decoration: none; // Garantir que não há sublinhado por padrão
+
+  &:hover {
+    color: $primary-color; // Mudar a cor no hover
+    text-decoration: underline; // Adicionar sublinhado no hover
+  }
+}
+
+/* Responsividade Básica */
+@media (max-width: 500px) {
+  .loginCard {
+    padding: 30px 25px; // Reduz o padding em telas menores
+    margin: 15px; // Garante margem nas bordas
+  }
+
+  .title {
+    font-size: 2em;
+    margin-bottom: 20px;
+  }
+
+  .loginButton {
+    padding: 14px 20px;
+    font-size: 1em;
+  }
+}
+.full-width-content {
+  width: 100%;
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}

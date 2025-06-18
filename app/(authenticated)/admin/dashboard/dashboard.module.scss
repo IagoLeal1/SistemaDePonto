@@ -1,0 +1,105 @@
+// app/admin/dashboard/dashboard.module.scss
+@import "styles/variables";
+
+.dashboardContent {
+  padding: 35px;
+  max-width: 900px;
+  margin: 0 auto;
+  background-color: $background-card; // Garante que a "caixa" do dashboard tenha um fundo
+  border-radius: 12px;
+  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
+  display: flex;
+  flex-direction: column;
+  gap: 30px;
+  box-sizing: border-box;
+  opacity: 0;
+  transform: translateY(20px);
+  animation: fadeIn 0.6s ease-out forwards;
+  overflow: hidden; // Adicione isso para evitar vazamento de conteúdo
+
+  @media (max-width: 768px) {
+    padding: 20px;
+    margin: 0 10px; // Um pouco de margem em telas menores
+  }
+}
+
+.loadingContainer {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 200px; // Altura mínima para mostrar o texto de carregamento
+  font-size: 1.2em;
+  color: $light-text-color;
+  background-color: $background-card; // Fundo para o loading
+  border-radius: 12px;
+  box-shadow: 0 4px 15px rgba(0,0,0,0.08);
+  margin: 20px; // Margem para que não grude nas bordas
+}
+
+.welcomeTitle {
+  font-size: 2.2em;
+  color: $primary-color;
+  margin-bottom: 10px;
+  text-align: center;
+}
+
+.welcomeSubtitle {
+  font-size: 1.1em;
+  color: $light-text-color;
+  margin-bottom: 30px;
+  text-align: center;
+}
+
+.toggleAddEmployeeButton {
+  background-color: $secondary-color;
+  color: white;
+  padding: 12px 20px;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  font-size: 1em;
+  font-weight: 600;
+  transition: background-color 0.2s ease, transform 0.1s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  margin-bottom: 25px;
+
+  &:hover {
+    background-color: darken($secondary-color, 8%);
+    transform: translateY(-1px);
+  }
+}
+
+.buttonIcon {
+  font-size: 1.1em;
+}
+
+.addEmployeeFormWrapper {
+  background-color: #f8f8f8; // Fundo para o formulário
+  border: 1px solid $border-color;
+  border-radius: 8px;
+  padding: 20px;
+  margin-bottom: 30px;
+  box-shadow: inset 0 2px 5px rgba(0,0,0,0.05); // Sombra interna sutil
+}
+
+.employeeListWrapper {
+  background-color: #f8f8f8; // Fundo para a lista
+  border: 1px solid $border-color;
+  border-radius: 8px;
+  padding: 20px;
+  box-shadow: inset 0 2px 5px rgba(0,0,0,0.05);
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}

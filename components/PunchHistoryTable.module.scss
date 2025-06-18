@@ -1,0 +1,111 @@
+/* components/PunchHistoryTable.module.scss */
+
+.historyTableContainer {
+  background-color: #ffffff;
+  padding: 25px;
+  border-radius: 8px;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
+  width: 100%;
+  max-width: 700px;
+  margin: 0 auto; /* Centraliza a tabela */
+}
+
+.dayGroup {
+  margin-bottom: 30px;
+  border: 1px solid #eee;
+  border-radius: 8px;
+  overflow: hidden;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+}
+
+.dayHeader {
+  background-color: #007bff; /* Cor primária */
+  color: white;
+  padding: 12px 20px;
+  margin: 0;
+  font-size: 1.3em;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.calendarIcon {
+  font-size: 1.2em;
+}
+
+.punchList {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.punchItem {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 12px 20px;
+  border-bottom: 1px solid #f0f0f0;
+  font-size: 1em;
+  color: #333;
+
+  &:last-child {
+    border-bottom: none;
+  }
+}
+
+.punchDetails {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.punchType {
+  font-weight: bold;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.punchTime {
+  color: #666;
+}
+
+/* Estilos dos ícones por tipo de batida */
+.iconIn {
+  color: #28a745; /* Verde para entrada */
+  font-size: 1.1em;
+}
+
+.iconOut {
+  color: #dc3545; /* Vermelho para saída */
+  font-size: 1.1em;
+}
+
+.iconLunch {
+  color: #ffc107; /* Amarelo/Laranja para almoço */
+  font-size: 1.1em;
+}
+
+/* Responsividade */
+@media (max-width: 600px) {
+  .historyTableContainer {
+    padding: 15px;
+  }
+  .dayHeader {
+    font-size: 1.1em;
+    padding: 10px 15px;
+  }
+  .punchItem {
+    flex-direction: column;
+    align-items: flex-start;
+    padding: 10px 15px;
+  }
+  .punchDetails {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 5px;
+  }
+  .punchTime {
+    margin-left: 0;
+  }
+}

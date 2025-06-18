@@ -1,0 +1,293 @@
+@import "styles/variables";
+
+// components/Sidebar.module.scss
+
+.sidebar {
+  width: 260px; // Largura padrão em desktop, um pouco mais espaçosa
+  background-color: #2c3e50; // Cor escura para contraste e profundidade
+  color: white;
+  padding: 30px 0; // Mais padding para um visual premium
+  display: flex;
+  flex-direction: column;
+  height: 100vh;
+  position: sticky; // Mantém a sidebar fixa ao rolar
+  top: 0;
+  left: 0;
+  box-shadow: 3px 0 10px rgba(0, 0, 0, 0.15); // Sombra mais pronunciada
+  transition: width 0.3s ease-in-out, padding 0.3s ease-in-out; // Transição para responsividade
+  z-index: 1001; // Garante que fique acima de outros elementos
+}
+
+.brandContainer {
+  padding: 0 25px 30px; // Padding mais generoso
+  border-bottom: 1px solid rgba(255, 255, 255, 0.15); // Linha divisória mais visível
+  margin-bottom: 30px; // Mais espaço abaixo da marca
+}
+
+.brand {
+  font-size: 1.8em; // Maior e mais impactante
+  font-weight: 700;
+  color: white;
+  text-decoration: none;
+  display: flex; // Para alinhar o ícone se houver
+  justify-content: center; // Centraliza o texto/ícone
+  align-items: center;
+  gap: 10px; // Espaço entre o ícone e o texto da marca (se aplicável)
+  transition: font-size 0.3s ease-in-out; // Transição para o texto/ícone da marca
+}
+
+.navLinks {
+  flex-grow: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 8px; // Espaço entre os itens de navegação
+}
+
+.navItem {
+  display: flex;
+  align-items: center;
+  gap: 15px; // Mais espaço entre ícone e texto
+  padding: 15px 25px; // Mais padding para maior área clicável
+  color: rgba(255, 255, 255, 0.75); // Cor mais visível
+  text-decoration: none;
+  transition: background-color 0.2s ease, color 0.2s ease, padding 0.2s ease; // Adiciona padding à transição
+  font-size: 1em; // Tamanho padrão, claro
+  border-left: 5px solid transparent; // Borda para destaque ativo/hover
+
+  &:hover {
+    background-color: #34495e;
+    color: white;
+    border-left-color: rgba(255, 255, 255, 0.3); // Leve destaque na borda esquerda
+  }
+
+  &.active {
+    background-color: $primary-color; // Cor de destaque principal
+    color: white;
+    font-weight: 600;
+    border-left-color: white; // Borda sólida branca para ativo
+    box-shadow: inset 0 0 10px rgba(0, 0, 0, 0.2); // Sombra interna sutil para o ativo
+  }
+}
+
+.navItemText {
+  white-space: nowrap; // Evita quebra de linha no texto
+  overflow: hidden; // Esconde o texto quando a sidebar é recolhida
+  text-overflow: ellipsis; // Adiciona reticências se o texto for cortado
+  transition: opacity 0.3s ease-in-out; // Transição para o texto sumir
+}
+
+.icon {
+  font-size: 1.3em; // Ícones um pouco maiores
+  min-width: 20px; // Garante que o ícone tenha um tamanho mínimo
+  text-align: center; // Centraliza o ícone
+  color: rgba(255, 255, 255, 0.8); // Cor mais vibrante para ícones
+
+  .navItem.active & {
+    color: white; // Garante que o ícone ativo seja branco
+  }
+}
+
+.footer {
+  padding: 25px; // Mais padding
+  border-top: 1px solid rgba(255, 255, 255, 0.15); // Linha divisória mais visível
+  text-align: center;
+  margin-top: 20px; // Mais espaço antes do rodapé
+}
+
+.logoutButton {
+  background-color: $danger-color;
+  color: white;
+  padding: 12px 20px; // Mais robusto
+  border: none;
+  border-radius: 8px; // Cantos mais suaves
+  cursor: pointer;
+  width: 100%;
+  font-size: 1em; // Tamanho padrão
+  font-weight: 600; // Mais bold
+  transition: background-color 0.2s ease, transform 0.1s ease, box-shadow 0.2s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  box-shadow: 0 3px 8px rgba($danger-color, 0.2); // Sombra para o botão
+
+  &:hover {
+    background-color: darken($danger-color, 8%);
+    transform: translateY(-1px);
+    box-shadow: 0 5px 12px rgba($danger-color, 0.3);
+  }
+
+  &:active {
+    transform: translateY(0);
+    box-shadow: 0 2px 5px rgba($danger-color, 0.2);
+  }
+}
+
+.logoutButtonText {
+  white-space: nowrap; // Evita quebra de linha
+  overflow: hidden;
+  text-overflow: ellipsis;
+  transition: opacity 0.3s ease-in-out;
+}
+
+.logoutButtonEmail {
+  font-size: 0.85em; // Tamanho menor para o email
+  opacity: 0.7; // Transparência
+  margin-left: 5px; // Espaçamento
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  transition: opacity 0.3s ease-in-out;
+
+  @media (max-width: 992px) { // Esconde o email completamente em mobile
+    display: none;
+  }
+}
+
+
+/* --- Responsividade: Sidebar Recolhida em Telas Menores --- */
+@media (max-width: 992px) { // Transiciona para modo recolhido em telas menores que 992px (tablets e celulares)
+  .sidebar {
+    width: 80px; // Largura reduzida para mostrar apenas ícones
+    padding: 20px 0;
+  }
+
+  .brandContainer {
+    padding: 0 5px 20px;
+  }
+
+  .brand {
+    font-size: 0; // Esconde o texto da marca
+    visibility: hidden;
+    width: 100%; // Ocupa a largura total para centralizar o ícone
+    height: 30px; // Altura fixa para o ícone
+    display: flex; // Garante que o ícone seja centralizado
+    justify-content: center;
+    align-items: center;
+  }
+
+  .brand::before {
+    content: "ADM"; // Substituição do texto da marca por uma abreviação
+    font-size: 1.4em; // Tamanho do ícone da marca
+    visibility: visible;
+    display: block;
+    color: white;
+    font-weight: 700;
+  }
+
+  .navItem {
+    padding: 15px 0; // Ajusta o padding para centralizar o ícone
+    justify-content: center; // Centraliza o ícone na largura reduzida
+    gap: 0; // Remove o gap entre ícone e texto
+    border-left: none; // Remove a borda lateral para não "quebrar" o alinhamento centralizado
+    position: relative; // Para o tooltip
+
+    &:hover {
+      border-left: none; // Garante que não apareça borda no hover também
+    }
+
+    &.active {
+      border-left: none; // Garante que não apareça borda no ativo
+      background-color: $primary-color; // Mantém a cor de fundo ativa
+    }
+  }
+
+  .navItemText {
+    opacity: 0; // Esconde o texto
+    width: 0; // Remove a largura do texto
+    visibility: hidden;
+    position: absolute; // Posição absoluta para o tooltip
+    left: 100%; // Começa após a sidebar recolhida
+    top: 50%;
+    transform: translateY(-50%);
+    background-color: rgba(0, 0, 0, 0.8);
+    color: white;
+    padding: 8px 12px;
+    border-radius: 4px;
+    white-space: nowrap;
+    pointer-events: none; // Não interfere com cliques
+    z-index: 1001; // Acima da sidebar
+    margin-left: 10px; // Espaço do ícone
+
+    // Triângulo do tooltip
+    &::before {
+      content: '';
+      position: absolute;
+      left: -5px;
+      top: 50%;
+      transform: translateY(-50%) rotate(45deg);
+      width: 10px;
+      height: 10px;
+      background-color: rgba(0, 0, 0, 0.8);
+    }
+  }
+
+  .navItem:hover .navItemText {
+    opacity: 1; // Mostra o texto no hover
+    width: auto; // Restaura a largura
+    visibility: visible;
+  }
+
+  .icon {
+    font-size: 1.5em; // Ícones um pouco maiores quando sozinhos
+    margin: 0; // Remove qualquer margem extra do ícone
+    min-width: auto; // Remove o min-width para não forçar espaço
+  }
+
+  .footer {
+    padding: 20px 0;
+  }
+
+  .logoutButton {
+    padding: 12px 0; // Ajusta o padding
+    font-size: 0; // Esconde o texto do botão
+    visibility: hidden; // Esconde o botão inteiro, mas o ícone continua visível
+    position: relative; // Para o tooltip
+
+    .icon {
+      font-size: 1.5em; // Ícone maior
+      visibility: visible; // Torna o ícone visível novamente
+    }
+
+    &:hover {
+      .logoutButtonText { // Mostra o tooltip do texto
+        opacity: 1;
+        width: auto;
+        visibility: visible;
+      }
+      .logoutButtonEmail { // Garante que o email não apareça como tooltip aqui
+        display: none;
+      }
+    }
+  }
+
+  .logoutButtonText {
+    // Estilo para o tooltip do botão de logout
+    opacity: 0;
+    width: 0;
+    visibility: hidden;
+    position: absolute;
+    left: 100%;
+    top: 50%;
+    transform: translateY(-50%);
+    background-color: rgba(0, 0, 0, 0.8);
+    color: white;
+    padding: 8px 12px;
+    border-radius: 4px;
+    white-space: nowrap;
+    pointer-events: none;
+    z-index: 1001;
+    margin-left: 10px;
+
+    &::before {
+      content: '';
+      position: absolute;
+      left: -5px;
+      top: 50%;
+      transform: translateY(-50%) rotate(45deg);
+      width: 10px;
+      height: 10px;
+      background-color: rgba(0, 0, 0, 0.8);
+    }
+  }
+}

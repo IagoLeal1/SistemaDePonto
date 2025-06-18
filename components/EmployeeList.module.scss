@@ -1,0 +1,94 @@
+@import "styles/variables";
+
+// components/EmployeeList.module.scss
+.employeeListContainer {
+  background-color: $background-card;
+  padding: 25px; // Reduzido
+  border-radius: var(--border-radius);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05); // Sombra mais leve
+  border: 1px solid $border-color;
+}
+
+.title {
+  font-size: 1.6em; // Reduzido
+  color: #2c3e50;
+  margin-bottom: 20px; // Reduzido
+  text-align: center;
+}
+
+.noEmployeesMessage {
+  text-align: center;
+  color: $light-text-color;
+  font-style: italic;
+  padding: 15px; // Reduzido
+  font-size: 0.95em; // Reduzido
+}
+
+.list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.listItem {
+  display: flex;
+  flex-wrap: wrap; // Permite quebrar linha em telas pequenas
+  align-items: center;
+  justify-content: space-between;
+  padding: 12px 15px; // Reduzido de 15px 20px
+  margin-bottom: 8px; // Reduzido de 10px
+  background-color: #f9f9f9; // Um pouco mais claro
+  border: 1px solid #f0f0f0; // Borda mais clara
+  border-radius: 6px; // Um pouco menor
+  box-shadow: 0 1px 3px rgba(0,0,0,0.03); // Sombra mais leve
+  font-size: 0.9em; // Reduzido
+}
+
+.employeeNameLink {
+  // Já definido globalmente/no componente, apenas garantindo que o estilo minimalista seja aplicado
+  text-decoration: none;
+  color: $primary-color;
+  font-weight: 600;
+  flex-basis: 100%; // Ocupa a linha inteira em mobile, se necessário
+  margin-bottom: 5px; // Espaço abaixo do nome em mobile
+
+  &:hover {
+    color: darken($primary-color, 10%);
+    text-decoration: underline;
+  }
+}
+
+.employeeName {
+  font-size: 1.1em; // Nome um pouco maior dentro do item
+}
+
+.employeeEmail,
+.employeeRole,
+.employeeDate {
+  color: $light-text-color;
+  flex-basis: calc(50% - 5px); // Ajuste para 2 colunas
+  text-align: left;
+  margin-top: 5px; // Espaço acima dos detalhes em mobile
+
+  &:nth-child(even) { // Aplica a cada segundo elemento
+    text-align: right;
+  }
+}
+
+@media (min-width: 768px) { // Desktop view
+  .listItem {
+    flex-wrap: nowrap; // Não quebra linha
+    justify-content: space-between;
+    .employeeNameLink {
+      flex-basis: auto; // Volta ao normal
+      margin-bottom: 0;
+    }
+    .employeeEmail,
+    .employeeRole,
+    .employeeDate {
+      flex-basis: auto;
+      margin-top: 0;
+      text-align: unset; // Remove alinhamento específico
+    }
+  }
+}
