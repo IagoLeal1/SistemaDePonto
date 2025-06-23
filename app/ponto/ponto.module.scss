@@ -5,76 +5,96 @@
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  min-height: 100vh;
+  height: 100vh;
   padding: 20px;
-  background-color: #f0f2f5;
-  font-family: 'Arial', sans-serif;
+  /* Cor de fundo da página: Usando um verde claro da paleta */
+  background-color: #87d1af; /* Cor principal de apoio, verde claro */
+  font-family: 'Roboto', sans-serif; /* Usando a tipografia de apoio */
   text-align: center;
+  box-sizing: border-box;
+  overflow: hidden;
+}
+
+.mainContentWrapper {
+  background-color: #ffffff; /* Fundo branco do card */
+  padding: 30px;
+  border-radius: 16px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+  width: 100%;
+  max-width: 650px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 25px;
+  margin: 40px auto;
+  flex-shrink: 1;
 }
 
 .title {
-  color: #333;
+  color: #16375b; /* Azul escuro do logo */
   margin-bottom: 10px;
   font-size: 2.5em;
+  font-family: 'Nirmala Regular', sans-serif; /* Usando a tipografia do logo */
 }
 
 .welcomeMessage {
-  color: #666;
-  margin-bottom: 30px;
+  color: #291b25; /* Um cinza escuro da paleta de apoio */
+  margin-bottom: 0;
   font-size: 1.2em;
 }
 
 .lastBatidaInfo {
-  background-color: #ffffff;
+  background-color: #fcfcfc; /* Um branco levemente diferente para um destaque sutil */
   padding: 20px;
   border-radius: 8px;
   box-shadow: 0 2px 10px rgba(0, 0, 0, 0.08);
-  margin-bottom: 30px;
+  margin-bottom: 0;
   display: flex;
   align-items: center;
   gap: 15px;
   font-size: 1.1em;
-  color: #444;
+  color: #291b25; /* Texto cinza escuro */
   width: 100%;
   max-width: 500px;
   justify-content: center;
+  border: 1px solid #eef3f6; /* Uma borda muito clara da paleta de apoio */
 
   .infoIcon {
+    color: #1dac8c; /* Um dos verdes vibrantes da paleta principal */
     font-size: 1.5em;
-    color: #007bff;
   }
 }
 
 .errorMessage {
-  color: #dc3545;
-  background-color: #f8d7da;
-  border: 1px solid #f5c6cb;
+  color: #b7133f; /* Um vermelho da paleta de apoio para erro */
+  background-color: #fcebeb; /* Um fundo muito claro para a mensagem de erro */
+  border: 1px solid #b7133f;
   padding: 10px;
   border-radius: 5px;
-  margin-bottom: 20px;
+  margin-bottom: 0;
   width: 100%;
   max-width: 500px;
 }
 
 .successMessage {
-  color: #28a745;
-  background-color: #d4edda;
-  border: 1px solid #c3e6cb;
+  color: #1dac8c; /* Um verde da paleta principal para sucesso */
+  background-color: #e6f7e8; /* Um fundo muito claro para a mensagem de sucesso */
+  border: 1px solid #1dac8c;
   padding: 10px;
   border-radius: 5px;
-  margin-bottom: 20px;
+  margin-bottom: 0;
   width: 100%;
   max-width: 500px;
 }
 
 .buttonGroup {
   display: flex;
-  flex-wrap: wrap; // Permite quebrar linha em telas menores
+  flex-wrap: wrap;
   gap: 15px;
-  margin-bottom: 30px;
+  margin-bottom: 0;
   justify-content: center;
   width: 100%;
-  max-width: 700px;
+  max-width: 600px;
 }
 
 .pontoButton {
@@ -88,9 +108,8 @@
   font-weight: bold;
   cursor: pointer;
   transition: background-color 0.3s ease, transform 0.2s ease;
-  color: white;
-  min-width: 200px; // Garante um tamanho mínimo
-  flex-grow: 1; // Permite que o botão cresça para preencher o espaço
+  color: white; /* Texto branco para contraste com fundos coloridos */
+  flex-grow: 1;
 
   .buttonIcon {
     margin-right: 10px;
@@ -106,33 +125,33 @@
 }
 
 .entradaButton {
-  background-color: #28a745; // Verde
+  background-color: #1dac8c; /* Verde mais vibrante da paleta principal */
   &:hover:not(:disabled) {
-    background-color: #218838;
+    background-color: #1da7ac; /* Um verde ligeiramente diferente para o hover */
     transform: scale(1.02);
   }
 }
 
 .inicio_almocoButton,
 .fim_almocoButton {
-  background-color: #ffc107; // Amarelo/Laranja
-  color: #333; // Texto escuro para contraste
+  background-color: #e68b00; /* Laranja da paleta principal */
+  color: white; /* Texto branco para contraste */
   &:hover:not(:disabled) {
-    background-color: #e0a800;
+    background-color: #ff8d69; /* Um laranja mais claro para o hover */
     transform: scale(1.02);
   }
 }
 
 .saidaButton {
-  background-color: #dc3545; // Vermelho
+  background-color: #b54c2b; /* Marrom avermelhado da paleta principal */
   &:hover:not(:disabled) {
-    background-color: #c82333;
+    background-color: #b7133f; /* Vermelho mais forte da paleta de apoio para hover */
     transform: scale(1.02);
   }
 }
 
 .logoutButton {
-  background-color: #6c757d; // Cinza
+  background-color: #6c757d; /* Mantendo um cinza neutro para o logout, ou poderíamos usar #291b25 */
   color: white;
   padding: 12px 25px;
   border: none;
@@ -145,9 +164,10 @@
   align-items: center;
   justify-content: center;
   gap: 10px;
+  margin-top: 25px;
 
   &:hover:not(:disabled) {
-    background-color: #5a6268;
+    background-color: #291b25; /* Cinza escuro da paleta de apoio para hover */
   }
 
   &:disabled {
@@ -162,17 +182,30 @@
 
 /* Responsividade básica */
 @media (max-width: 768px) {
+  .mainContentWrapper {
+    padding: 20px;
+    border-radius: 12px;
+    gap: 20px;
+    margin: 20px auto;
+  }
   .buttonGroup {
     flex-direction: column;
     width: 90%;
+    max-width: unset;
   }
   .pontoButton {
-    min-width: unset; // Remove min-width para mobile
+    min-width: unset;
+    flex-basis: 100%;
+    max-width: unset;
   }
   .title {
     font-size: 2em;
   }
   .welcomeMessage {
+    font-size: 1em;
+  }
+  .lastBatidaInfo, .errorMessage, .successMessage {
+    padding: 15px;
     font-size: 1em;
   }
 }

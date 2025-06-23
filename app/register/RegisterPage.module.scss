@@ -1,5 +1,7 @@
 // app/register/RegisterPage.module.scss
 
+@import "styles/variables"; // Importa suas variáveis globais
+
 .registerContainer {
   display: flex;
   flex-direction: column;
@@ -7,27 +9,31 @@
   justify-content: center;
   min-height: 100vh;
   padding: 20px;
-  background-color: #f0f2f5; /* Light background */
-  font-family: 'Arial', sans-serif;
+  /* Cor de fundo da página de registro com gradiente da paleta Casa Libelle */
+  background: linear-gradient(135deg, $gradient-start, $gradient-end); /*cite: image_22653c.jpg*/
+  font-family: 'Roboto', sans-serif; /* Usando a tipografia de apoio */
+  box-sizing: border-box;
 }
 
 .title {
-  color: #333;
+  color: $text-color; /* Azul escuro do logo para o título */ /*cite: image_22653c.jpg*/
   margin-bottom: 30px;
   font-size: 2.2em;
   text-align: center;
+  font-family: 'Nirmala Regular', sans-serif; /* Usando a tipografia do logo */ /*cite: image_22653c.jpg*/
 }
 
 .form {
-  background-color: #fff;
+  background-color: $background-card; /* Branco para o fundo do formulário */ /*cite: image_22653c.jpg*/
   padding: 40px;
-  border-radius: 8px;
-  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1); /* Soft shadow */
+  border-radius: 12px; /* Cantos mais arredondados para um estilo moderno */
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1); /* Sombra mais suave e proeminente */
   width: 100%;
-  max-width: 450px; /* Increased max-width slightly */
+  max-width: 450px;
   display: flex;
   flex-direction: column;
-  gap: 20px; /* Space between form groups */
+  gap: 20px;
+  box-sizing: border-box; /* Garante que padding e border sejam incluídos na largura/altura */
 }
 
 .formGroup {
@@ -36,7 +42,7 @@
 
   label {
     margin-bottom: 8px;
-    color: #555;
+    color: $text-color; /* Azul escuro para os labels */ /*cite: image_22653c.jpg*/
     font-weight: bold;
     font-size: 0.95em;
   }
@@ -44,56 +50,61 @@
 
 .inputField {
   padding: 12px;
-  border: 1px solid #ddd;
-  border-radius: 5px;
+  border: 1px solid $border-color; /* Borda cinza clara */ /*cite: image_22653c.jpg*/
+  border-radius: 8px; /* Cantos mais suaves para os inputs */
   font-size: 1em;
-  transition: border-color 0.3s ease; /* Smooth transition for focus */
+  transition: border-color 0.3s ease, box-shadow 0.3s ease; /* Transição para foco */
+  background-color: $color-white; /* Fundo branco para os inputs */ /*cite: image_22653c.jpg*/
 
   &:focus {
-    border-color: #007bff; /* Primary color border on focus */
-    outline: none; /* Remove default outline */
+    border-color: $primary-color; /* Cor primária na borda ao focar */ /*cite: image_22653c.jpg*/
+    outline: none;
+    box-shadow: 0 0 0 3px rgba($primary-color, 0.2); /* Sombra de foco com a cor primária */ /*cite: image_22653c.jpg*/
   }
 
   &:disabled {
-    background-color: #e9ecef; /* Lighter background for disabled */
+    background-color: $color-light-grey; /* Cinza claro para desabilitado */ /*cite: image_22653c.jpg*/
     cursor: not-allowed;
   }
 }
 
 .registerButton {
-  background-color: #007bff; /* Primary button color */
+  background-color: $primary-color; /* Cor primária para o botão de registro */ /*cite: image_22653c.jpg*/
   color: white;
-  padding: 12px 20px;
+  padding: 14px 20px; /* Um pouco mais de padding para um botão robusto */
   border: none;
-  border-radius: 5px;
+  border-radius: 8px; /* Cantos mais suaves */
   font-size: 1.1em;
   cursor: pointer;
-  transition: background-color 0.3s ease;
+  transition: background-color 0.3s ease, transform 0.2s ease, box-shadow 0.3s ease;
+  box-shadow: 0 4px 10px rgba($primary-color, 0.2); /* Sombra para o botão */ /*cite: image_22653c.jpg*/
 
   &:hover:not(:disabled) {
-    background-color: #0056b3; /* Darker on hover */
+    background-color: darken($primary-color, 8%); /* Escurece no hover */ /*cite: image_22653c.jpg*/
+    transform: translateY(-2px); /* Efeito 3D sutil */
+    box-shadow: 0 6px 15px rgba($primary-color, 0.3); /* Sombra aumentada no hover */ /*cite: image_22653c.jpg*/
   }
 
   &:disabled {
-    background-color: #a0c9f1; /* Lighter when disabled */
+    background-color: lighten($primary-color, 20%); /* Mais claro quando desabilitado */ /*cite: image_22653c.jpg*/
     cursor: not-allowed;
   }
 }
 
 .errorMessage {
-  color: #dc3545; /* Red for errors */
-  background-color: #f8d7da; /* Light red background */
-  border: 1px solid #f5c6cb;
+  color: $danger-color; /* Vermelho da paleta para erros */ /*cite: image_22653c.jpg*/
+  background-color: lighten($danger-color, 40%); /* Fundo claro para a mensagem de erro */ /*cite: image_22653c.jpg*/
+  border: 1px solid $danger-color; /*cite: image_22653c.jpg*/
   padding: 10px;
   border-radius: 5px;
-  margin-top: -10px; /* Adjust spacing */
+  margin-top: -10px;
   font-size: 0.9em;
 }
 
 .successMessage {
-  color: #28a745; /* Green for success */
-  background-color: #d4edda; /* Light green background */
-  border: 1px solid #c3e6cb;
+  color: $secondary-color; /* Verde da paleta para sucesso */ /*cite: image_22653c.jpg*/
+  background-color: lighten($secondary-color, 40%); /* Fundo claro para a mensagem de sucesso */ /*cite: image_22653c.jpg*/
+  border: 1px solid $secondary-color; /*cite: image_22653c.jpg*/
   padding: 10px;
   border-radius: 5px;
   margin-top: -10px;
@@ -102,11 +113,12 @@
 
 .loginLink {
   margin-top: 20px;
-  color: #555;
+  color: $light-text-color; /* Cinza escuro para o texto do link */ /*cite: image_22653c.jpg*/
   text-align: center;
+  font-family: 'Roboto', sans-serif; /* Usando a tipografia de apoio */
 
   a {
-    color: #007bff; /* Link color */
+    color: $primary-color; /* Cor primária para o link */ /*cite: image_22653c.jpg*/
     text-decoration: none;
     font-weight: bold;
 
@@ -116,7 +128,7 @@
   }
 }
 
-/* Basic responsiveness */
+/* Responsividade Básica */
 @media (max-width: 600px) {
   .form {
     padding: 25px;

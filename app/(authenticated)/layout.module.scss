@@ -1,21 +1,22 @@
 // app/(authenticated)/layout.module.scss
-// Antigo: components/DashboardLayout.module.scss
-@import "styles/variables";
+@import "styles/variables"; // Importa suas variáveis globais
 
 .authenticatedLayout { // NOME DA CLASSE MUDOU
   display: flex;
   min-height: 100vh;
-  background-color: $background-light;
+  /* Fundo da página autenticada com gradiente da paleta Casa Libelle */
+  background: linear-gradient(135deg, $gradient-start, $gradient-end); /*cite: image_22653c.jpg*/
   margin: 0;
   padding: 0;
   z-index: 0; // Este layout pode ter um z-index baixo
+  font-family: 'Roboto', sans-serif; /* Usando a tipografia de apoio */
 }
 
 .mainContent {
   flex-grow: 1;
   padding: 20px;
-  overflow-y: auto;
-  background-color: $background-light; // Garante que o fundo do conteúdo principal esteja definido
+  overflow-y: auto; /* Mantém a rolagem para o conteúdo principal, se necessário */
+  background-color: transparent; /* Permite que o gradiente do .authenticatedLayout apareça */
   position: relative; // Essencial para z-index do conteúdo interno
   z-index: 1; // Garante que o conteúdo principal esteja acima de elementos de fundo
 }
@@ -23,7 +24,7 @@
 /* --- Responsividade do Layout --- */
 @media (max-width: 992px) {
   .authenticatedLayout {
-    flex-direction: row;
+    flex-direction: column; /* Em telas menores, a navegação pode ficar em cima e o conteúdo embaixo */
   }
 
   .mainContent {

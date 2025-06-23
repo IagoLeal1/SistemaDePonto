@@ -1,25 +1,26 @@
 // app/admin/dashboard/dashboard.module.scss
-@import "styles/variables";
+@import "styles/variables"; // Importa suas variáveis globais
 
 .dashboardContent {
   padding: 35px;
   max-width: 900px;
   margin: 0 auto;
-  background-color: $background-card; // Garante que a "caixa" do dashboard tenha um fundo
-  border-radius: 12px;
-  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
+  background-color: $background-card; /* Fundo branco do card [cite: image_22653c.jpg] */
+  border-radius: 16px; /* Cantos mais arredondados para um estilo moderno */
+  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1); /* Sombra suave e proeminente */
   display: flex;
   flex-direction: column;
-  gap: 30px;
+  gap: 30px; /* Espaçamento entre as seções */
   box-sizing: border-box;
   opacity: 0;
   transform: translateY(20px);
   animation: fadeIn 0.6s ease-out forwards;
-  overflow: hidden; // Adicione isso para evitar vazamento de conteúdo
+  overflow: hidden; /* Adicione isso para evitar vazamento de conteúdo */
+  font-family: 'Roboto', sans-serif; /* Usando a tipografia de apoio [cite: image_22653c.jpg] */
 
   @media (max-width: 768px) {
     padding: 20px;
-    margin: 0 10px; // Um pouco de margem em telas menores
+    margin: 0 10px; /* Um pouco de margem em telas menores */
   }
 }
 
@@ -27,31 +28,32 @@
   display: flex;
   justify-content: center;
   align-items: center;
-  min-height: 200px; // Altura mínima para mostrar o texto de carregamento
+  min-height: 200px;
   font-size: 1.2em;
-  color: $light-text-color;
-  background-color: $background-card; // Fundo para o loading
+  color: $light-text-color; /* Cinza escuro para o texto de loading [cite: image_22653c.jpg] */
+  background-color: $background-card; /* Fundo branco para o loading */ /*cite: image_22653c.jpg*/
   border-radius: 12px;
   box-shadow: 0 4px 15px rgba(0,0,0,0.08);
-  margin: 20px; // Margem para que não grude nas bordas
+  margin: 20px;
 }
 
 .welcomeTitle {
   font-size: 2.2em;
-  color: $primary-color;
+  color: $text-color; /* Azul escuro do logo para o título de boas-vindas [cite: image_22653c.jpg] */
   margin-bottom: 10px;
   text-align: center;
+  font-family: 'Nirmala Regular', sans-serif; /* Usando a tipografia do logo [cite: image_22653c.jpg] */
 }
 
 .welcomeSubtitle {
   font-size: 1.1em;
-  color: $light-text-color;
+  color: $light-text-color; /* Cinza escuro para o subtítulo [cite: image_22653c.jpg] */
   margin-bottom: 30px;
   text-align: center;
 }
 
 .toggleAddEmployeeButton {
-  background-color: $secondary-color;
+  background-color: $primary-color; /* Cor primária para o botão de adicionar funcionário [cite: image_22653c.jpg] */
   color: white;
   padding: 12px 20px;
   border: none;
@@ -59,16 +61,18 @@
   cursor: pointer;
   font-size: 1em;
   font-weight: 600;
-  transition: background-color 0.2s ease, transform 0.1s ease;
+  transition: background-color 0.2s ease, transform 0.1s ease, box-shadow 0.2s ease; /* Transição de sombra */
   display: flex;
   align-items: center;
   justify-content: center;
   gap: 8px;
   margin-bottom: 25px;
+  box-shadow: 0 4px 10px rgba($primary-color, 0.2); /* Sombra para o botão [cite: image_22653c.jpg] */
 
   &:hover {
-    background-color: darken($secondary-color, 8%);
-    transform: translateY(-1px);
+    background-color: darken($primary-color, 8%); /* Escurece no hover [cite: image_22653c.jpg] */
+    transform: translateY(-2px); /* Efeito 3D sutil */
+    box-shadow: 0 6px 15px rgba($primary-color, 0.3); /* Sombra aumentada no hover [cite: image_22653c.jpg] */
   }
 }
 
@@ -76,21 +80,13 @@
   font-size: 1.1em;
 }
 
-.addEmployeeFormWrapper {
-  background-color: #f8f8f8; // Fundo para o formulário
-  border: 1px solid $border-color;
-  border-radius: 8px;
-  padding: 20px;
-  margin-bottom: 30px;
-  box-shadow: inset 0 2px 5px rgba(0,0,0,0.05); // Sombra interna sutil
-}
-
+.addEmployeeFormWrapper,
 .employeeListWrapper {
-  background-color: #f8f8f8; // Fundo para a lista
-  border: 1px solid $border-color;
+  background-color: $color-light-grey; /* Cinza muito claro para o fundo dos wrappers [cite: image_22653c.jpg] */
+  border: 1px solid $border-color; /* Borda cinza clara [cite: image_22653c.jpg] */
   border-radius: 8px;
   padding: 20px;
-  box-shadow: inset 0 2px 5px rgba(0,0,0,0.05);
+  box-shadow: inset 0 2px 5px rgba(0,0,0,0.03); /* Sombra interna mais sutil */
 }
 
 @keyframes fadeIn {

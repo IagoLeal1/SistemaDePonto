@@ -6,11 +6,11 @@ import { useAuth } from '@/app/context/AuthContext';
 import { db } from '@/lib/firebase';
 import { collection, addDoc, serverTimestamp, query, where, getDocs, orderBy, limit } from 'firebase/firestore';
 import { useRouter } from 'next/navigation';
-import styles from './ponto.module.scss'; // Supondo que você tem um CSS para esta página
+import styles from './ponto.module.scss';
 
 // Importar ícones
 import { FaClock, FaSignInAlt, FaSignOutAlt, FaUtensils, FaCalendarAlt, FaDoorOpen } from 'react-icons/fa';
-import { getAuth, signOut } from 'firebase/auth'; // Importe getAuth e signOut
+import { getAuth, signOut } from 'firebase/auth';
 
 // Tipos de batida de ponto
 type BatidaType = 'entrada' | 'inicio_almoco' | 'fim_almoco' | 'saida';
@@ -28,16 +28,16 @@ export default function PontoPage() {
   const router = useRouter();
   const [lastBatida, setLastBatida] = useState<BatidaDePonto | null>(null);
   const [error, setError] = useState<string | null>(null);
-  const [message, setMessage] = useState<string | null>(null); // Mensagens de sucesso
-  const [isPunching, setIsPunching] = useState(false); // Estado para controlar o loading do botão
+  const [message, setMessage] = useState<string | null>(null);
+  const [isPunching, setIsPunching] = useState(false);
 
   // Mapeamento da próxima batida esperada
   const nextExpectedPunch: Record<BatidaType | 'nenhuma', BatidaType> = {
-    'nenhuma': 'entrada', // Se não houver batida, espera uma entrada
+    'nenhuma': 'entrada',
     'entrada': 'inicio_almoco',
     'inicio_almoco': 'fim_almoco',
     'fim_almoco': 'saida',
-    'saida': 'entrada', // Após uma saída, espera uma nova entrada
+    'saida': 'entrada',
   };
 
   // Função para buscar a última batida do usuário
@@ -60,10 +60,10 @@ export default function PontoPage() {
           id: doc.id,
           userId: data.userId,
           timestamp: data.timestamp.toDate(),
-          type: data.type, // O tipo da última batida
-        } as BatidaDePonto); // Assegura que o tipo é BatidaType
+          type: data.type,
+        } as BatidaDePonto);
       } else {
-        setLastBatida(null); // Nenhuma batida anterior
+        setLastBatida(null);
       }
     } catch (err) {
       console.error("Erro ao buscar última batida:", err);
@@ -88,13 +88,12 @@ export default function PontoPage() {
       setError("Você precisa estar logado para registrar o ponto.");
       return;
     }
-    if (isPunching) return; // Previne cliques múltiplos
+    if (isPunching) return;
 
-    setIsPunching(true); // Ativa o estado de loading do botão
-    setError(null); // Limpa erros anteriores
-    setMessage(null); // Limpa mensagens anteriores
+    setIsPunching(true);
+    setError(null);
+    setMessage(null);
 
-    // Determina o tipo de batida esperada com base na última
     const expectedType = lastBatida ? nextExpectedPunch[lastBatida.type] : nextExpectedPunch['nenhuma'];
 
     if (type !== expectedType) {
@@ -110,22 +109,21 @@ export default function PontoPage() {
         type: type,
       });
       setMessage(`Ponto de ${type.replace('_', ' ')} registrado com sucesso!`);
-      // Após o registro, busque a última batida novamente para atualizar o status
       await fetchLastBatida();
     } catch (err) {
       console.error(`Erro ao registrar ponto de ${type}:`, err);
       setError(`Erro ao registrar ponto de ${type}. Por favor, tente novamente.`);
     } finally {
-      setIsPunching(false); // Desativa o estado de loading
+      setIsPunching(false);
     }
   };
 
   // Função para logout
   const handleLogout = async () => {
     try {
-      const authInstance = getAuth(); // Obtém a instância de autenticação
+      const authInstance = getAuth();
       await signOut(authInstance);
-      router.push('/login'); // Redireciona para a página de login após o logout
+      router.push('/login');
     } catch (err) {
       console.error("Erro ao fazer logout:", err);
       setError("Erro ao fazer logout. Por favor, tente novamente.");
@@ -151,7 +149,7 @@ export default function PontoPage() {
       <button
         key={type}
         onClick={() => handleRegistrarPonto(type)}
-        className={`${styles.pontoButton} ${styles[type + 'Button']}`} // Ex: styles.entradaButton
+        className={`${styles.pontoButton} ${styles[type + 'Button']}`}
         disabled={isPunching || !isButtonEnabled}
       >
         {icon}
@@ -162,36 +160,39 @@ export default function PontoPage() {
 
   return (
     <div className={styles.pontoContainer}>
-      <h1 className={styles.title}>Meu Ponto Eletrônico</h1>
-      <p className={styles.welcomeMessage}>Olá, {currentUser.displayName || currentUser.email}!</p>
+      <div className={styles.mainContentWrapper}>
+        <h1 className={styles.title}>Meu Ponto Eletrônico</h1>
+        <p className={styles.welcomeMessage}>Olá, {currentUser.displayName || currentUser.email}!</p>
 
-      {error && <p className={styles.errorMessage}>{error}</p>}
-      {message && <p className={styles.successMessage}>{message}</p>}
+        {error && <p className={styles.errorMessage}>{error}</p>}
+        {message && <p className={styles.successMessage}>{message}</p>}
 
-      <div className={styles.lastBatidaInfo}>
-        <FaCalendarAlt className={styles.infoIcon} />
-        {lastBatida ? (
-          <p>
-            Última batida ({lastBatida.type.replace('_', ' ')}):{' '}
-            {lastBatida.timestamp.toLocaleDateString('pt-BR')} às{' '}
-            {lastBatida.timestamp.toLocaleTimeString('pt-BR')}
-          </p>
-        ) : (
-          <p>Nenhuma batida registrada ainda. Clique em "Registrar Entrada" para começar.</p>
-        )}
+        <div className={styles.lastBatidaInfo}>
+          {lastBatida ? (
+            <>
+              <FaClock className={styles.infoIcon} />
+              <p>Último Registro: <strong>{lastBatida.type.replace('_', ' ')}</strong> em {lastBatida.timestamp.toLocaleDateString('pt-BR')} às {lastBatida.timestamp.toLocaleTimeString('pt-BR')}</p>
+            </>
+          ) : (
+            <>
+              <FaClock className={styles.infoIcon} />
+              <p>Nenhuma batida registrada ainda. Comece com uma Entrada!</p>
+            </>
+          )}
+        </div>
+
+        <div className={styles.buttonGroup}>
+          {renderPontoButton('entrada', <FaSignInAlt className={styles.buttonIcon} />, 'Registrar Entrada')}
+          {renderPontoButton('inicio_almoco', <FaUtensils className={styles.buttonIcon} />, 'Início de Almoço')}
+          {renderPontoButton('fim_almoco', <FaUtensils className={styles.buttonIcon} />, 'Fim de Almoço')}
+          {renderPontoButton('saida', <FaSignOutAlt className={styles.buttonIcon} />, 'Registrar Saída')}
+        </div>
+
+        <button onClick={handleLogout} className={styles.logoutButton} disabled={isPunching}>
+          <FaDoorOpen className={styles.buttonIcon} />
+          Sair
+        </button>
       </div>
-
-      <div className={styles.buttonGroup}>
-        {renderPontoButton('entrada', <FaSignInAlt className={styles.buttonIcon} />, 'Registrar Entrada')}
-        {renderPontoButton('inicio_almoco', <FaUtensils className={styles.buttonIcon} />, 'Início de Almoço')}
-        {renderPontoButton('fim_almoco', <FaUtensils className={styles.buttonIcon} />, 'Fim de Almoço')}
-        {renderPontoButton('saida', <FaSignOutAlt className={styles.buttonIcon} />, 'Registrar Saída')}
-      </div>
-
-      <button onClick={handleLogout} className={styles.logoutButton} disabled={isPunching}>
-        <FaDoorOpen className={styles.buttonIcon} />
-        Sair
-      </button>
     </div>
   );
 }

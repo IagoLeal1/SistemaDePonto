@@ -1,9 +1,39 @@
 // app/styles/_variables.scss
-$primary-color: #3498db;
-$secondary-color: #2ecc71;
-$danger-color: #e74c3c;
-$text-color: #333;
-$light-text-color: #777;
-$border-color: #e0e0e0;
-$background-light: #f4f7f6;
-$background-card: #ffffff;
+
+// Cores da paleta Casa Libelle
+
+// Cores Principais
+$color-dark-blue: #16375b; // Azul escuro
+$color-green-1: #1da7ac;   // Verde vibrante 1
+$color-green-2: #8cc9cb;   // Verde claro 1
+$color-green-3: #1dac8c;   // Verde vibrante 2
+$color-green-4: #87d1af;   // Verde claro 2
+$color-brown-1: #b54c2b;   // Marrom avermelhado
+$color-orange-1: #ff8d69;  // Laranja claro
+$color-orange-2: #e68b00;  // Laranja escuro
+$color-beige-1: #e7be81;   // Bege
+
+// Cores de Apoio
+$color-white: #ffffff;    // Branco
+$color-light-yellow: #fff6da; // Amarelo muito claro
+$color-light-grey: #eef3f6;   // Cinza muito claro
+$color-dark-grey: #291b25;   // Cinza escuro
+$color-red: #b7133f;      // Vermelho forte
+
+// Mapeamento das variáveis genéricas para as cores da Casa Libelle
+
+$primary-color: $color-green-3; // Um verde vibrante para ações principais e botões
+$secondary-color: $color-green-1; // Outro verde vibrante para elementos secundários
+$danger-color: $color-red;      // O vermelho da paleta de apoio para perigo/erros
+
+$text-color: $color-dark-blue;   // Azul escuro do logo para textos principais
+$light-text-color: $color-dark-grey; // Cinza escuro para textos de apoio/secundários
+
+$border-color: $color-light-grey; // Cinza muito claro para bordas de campos
+
+$background-light: $color-green-4; // Verde claro para fundos de página suaves
+$background-card: $color-white;    // Branco para o fundo de cards e módulos
+
+// Variáveis adicionais para gradientes de fundo, se precisar
+$gradient-start: $color-green-4;   // Verde claro para o início do gradiente
+$gradient-end: $color-green-2;     // Verde um pouco mais escuro para o fim do gradiente

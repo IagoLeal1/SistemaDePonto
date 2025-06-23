@@ -1,20 +1,24 @@
 /* app/admin/employee/employeeHistory.module.scss */
 
+@import "styles/variables"; // Importa suas variáveis globais
+
 .employeeHistoryContainer {
   padding: 30px;
-  background-color: #f8f9fa;
+  /* Cor de fundo da página de histórico com gradiente da paleta Casa Libelle */
+  background: linear-gradient(135deg, $gradient-start, $gradient-end); /*cite: image_22653c.jpg*/
   min-height: 100vh;
-  font-family: 'Arial', sans-serif;
+  font-family: 'Roboto', sans-serif; /* Usando a tipografia de apoio */
 }
 
 .title {
-  color: #2c3e50;
+  color: $color-dark-grey; /* Branco do logo para o título */
   margin-bottom: 10px;
   font-size: 2.2em;
+  font-family: 'Nirmala Regular', sans-serif; /* Usando a tipografia do logo */
 }
 
 .subtitle {
-  color: #555;
+  color: $light-text-color; /* Cinza escuro para o subtítulo */
   margin-bottom: 30px;
   font-size: 1.1em;
 }
@@ -23,11 +27,11 @@
   text-align: center;
   padding: 50px;
   font-size: 1.2em;
-  color: #666;
+  color: $light-text-color; /* Cinza escuro para mensagens informativas */
 }
 
 .errorContainer {
-  color: #dc3545;
+  color: $danger-color; /* Vermelho da paleta para erros */
 }
 
 /* Novo: Container para filtros e botão de download */
@@ -46,34 +50,34 @@
   gap: 15px;
   align-items: center;
   padding: 20px;
-  background-color: #e9ecef;
+  background-color: $color-light-grey; /* Cinza muito claro para o fundo do filtro */
   border-radius: 8px;
   box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
   flex-grow: 1; /* Permite que o filtro ocupe o espaço disponível */
 
   label {
     font-weight: bold;
-    color: #343a40;
+    color: $text-color; /* Azul escuro para os labels */
     white-space: nowrap; /* Impede que o label quebre a linha */
   }
 
   .dateInput {
     padding: 10px;
-    border: 1px solid #ced4da;
+    border: 1px solid $border-color; /* Borda cinza clara */
     border-radius: 5px;
     font-size: 1em;
     flex-grow: 1; /* Permite que o input cresça */
     max-width: 180px; /* Limita largura em telas maiores */
 
     &:focus {
-      border-color: #007bff;
+      border-color: $primary-color; /* Cor primária na borda ao focar */
       outline: none;
-      box-shadow: 0 0 0 0.2rem rgba(0, 123, 255, 0.25);
+      box-shadow: 0 0 0 0.2rem rgba($primary-color, 0.25); /* Sombra de foco com cor primária */
     }
   }
 
   .applyFilterButton {
-    background-color: #28a745;
+    background-color: $secondary-color; /* Segundo verde vibrante da paleta para o botão de filtro */
     color: white;
     padding: 10px 20px;
     border: none;
@@ -83,11 +87,11 @@
     transition: background-color 0.3s ease;
 
     &:hover {
-      background-color: #218838;
+      background-color: darken($secondary-color, 8%); /* Escurece no hover */
     }
 
     &:disabled {
-      background-color: #b3e0c0;
+      background-color: lighten($secondary-color, 20%); /* Mais claro quando desabilitado */
       cursor: not-allowed;
     }
   }
@@ -95,27 +99,29 @@
 
 /* NOVO: Botão de Download PDF na página de histórico do funcionário */
 .downloadReportButton {
-  background-color: #dc3545; /* Vermelho/perigo para o PDF */
+  background-color: $color-brown-1; /* Marrom avermelhado da paleta para o PDF */
   color: white;
   padding: 12px 25px;
   border: none;
-  border-radius: 5px;
+  border-radius: 8px; /* Cantos mais arredondados para um visual moderno */
   font-size: 1.1em;
   cursor: pointer;
-  transition: background-color 0.3s ease;
+  transition: background-color 0.3s ease, transform 0.2s ease, box-shadow 0.3s ease;
   display: flex;
   align-items: center;
   gap: 10px; /* Espaçamento entre ícone e texto */
   justify-content: center; /* Centraliza o conteúdo do botão */
   white-space: nowrap; /* Impede quebra de linha do texto no botão */
-  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1); /* Sombra para destacar */
+  box-shadow: 0 4px 10px rgba($color-brown-1, 0.2); /* Sombra para destacar com a cor do botão */
 
   &:hover {
-    background-color: #c82333; /* Vermelho mais escuro no hover */
+    background-color: $color-red; /* Vermelho forte da paleta de apoio no hover */
+    transform: translateY(-2px);
+    box-shadow: 0 6px 15px rgba($color-red, 0.3); /* Sombra aumentada no hover */
   }
 
   &:disabled {
-    background-color: #e38d97;
+    background-color: lighten($color-brown-1, 15%); /* Mais claro quando desabilitado */
     cursor: not-allowed;
   }
 }
@@ -126,6 +132,7 @@
 
 .spinnerIcon {
   font-size: 1.2em;
+  color: white; /* Cor do spinner para contraste */
   animation: spin 1s linear infinite; /* Animação de spinner */
 }
 
@@ -136,7 +143,7 @@
 
 /* NOVO: Estilos para o conteúdo do relatório que será capturado pelo PDF */
 .reportContent {
-  background-color: #ffffff; /* Fundo branco para o relatório */
+  background-color: $background-card; /* Fundo branco para o relatório */
   padding: 25px;
   border-radius: 8px;
   box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08); /* Sombra mais acentuada para o box do relatório */
@@ -144,14 +151,15 @@
 
 .reportHeaderTitle {
   font-size: 1.8em;
-  color: #2c3e50;
+  color: $text-color; /* Azul escuro para o título do relatório */
   margin-bottom: 5px;
   text-align: center;
+  font-family: 'Nirmala Regular', sans-serif; /* Usando a tipografia do logo */
 }
 
 .reportPeriod {
   font-size: 1em;
-  color: #666;
+  color: $light-text-color; /* Cinza escuro para o período do relatório */
   margin-bottom: 20px;
   text-align: center;
 }

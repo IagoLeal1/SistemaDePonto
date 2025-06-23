@@ -31,9 +31,9 @@ export default function Sidebar() {
   return (
     <aside className={styles.sidebar}>
       <div className={styles.brandContainer}>
-        <Link href="/ponto" className={styles.brand}>
-          {/* Mudei de navItemText para brandText para estilização específica do título */}
-          <span className={styles.brandText}>Sistema de Ponto</span> {/* <--- MUDANÇA AQUI */}
+        {/* Usamos um Link aqui para que a logo também seja clicável e leve para a dashboard ou homepage */}
+        <Link href={isAdmin ? "/admin/dashboard" : "/ponto"} className={styles.brand}>
+          <img src="/images/logotipo colorido e branco.png" alt="Libélula" className={styles.brandLogo} /> {/* <--- IMAGEM AQUI */}
         </Link>
       </div>
       <nav className={styles.navLinks}>
@@ -48,13 +48,17 @@ export default function Sidebar() {
         )}
 
         {isAdmin && (
-          <Link
-            href="/admin/dashboard"
-            className={`${styles.navItem} ${pathname.startsWith('/admin/dashboard') ? styles.active : ''}`}
-          >
-            <FaTachometerAlt className={styles.icon} />
-            <span className={styles.navItemText}>Dashboard</span>
-          </Link>
+          <>
+            <Link
+              href="/admin/dashboard"
+              className={`${styles.navItem} ${pathname.startsWith('/admin/dashboard') ? styles.active : ''}`}
+            >
+              <FaTachometerAlt className={styles.icon} />
+              <span className={styles.navItemText}>Dashboard</span>
+            </Link>
+            {/* Adicionei o link para 'Funcionários' se for admin */}
+            
+          </>
         )}
 
       </nav>
@@ -62,8 +66,8 @@ export default function Sidebar() {
         {currentUser ? (
           <button onClick={handleLogout} className={styles.logoutButton}>
             <FaSignOutAlt className={styles.icon} />
-            <span className={styles.logoutButtonText}>Sair</span> {/* <--- MANTÉM APENAS O TEXTO "SAIR" */}
-            {/* REMOVA ESTA LINHA: <span className={styles.logoutButtonEmail}>({currentUser.email})</span> */}
+            <span className={styles.logoutButtonText}>Sair</span>
+            {/* Removi a linha do e-mail conforme sua solicitação */}
           </button>
         ) : (
           <Link href="/login" className={styles.navItem}>

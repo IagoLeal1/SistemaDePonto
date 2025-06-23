@@ -1,27 +1,29 @@
-@import "styles/variables";
-
 // components/EmployeeList.module.scss
+@import "styles/variables"; // Importa suas variáveis globais
+
 .employeeListContainer {
-  background-color: $background-card;
-  padding: 25px; // Reduzido
-  border-radius: var(--border-radius);
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05); // Sombra mais leve
-  border: 1px solid $border-color;
+  background-color: $background-card; /* Fundo branco do card */
+  padding: 25px;
+  border-radius: 12px; /* Usando um valor fixo ou sua variável, como 12px para consistência */
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08); /* Sombra mais acentuada e coesa com outros cards */
+  border: 1px solid $border-color; /* Borda cinza clara */
+  font-family: 'Roboto', sans-serif; /* Usando a tipografia de apoio */
 }
 
 .title {
-  font-size: 1.6em; // Reduzido
-  color: #2c3e50;
-  margin-bottom: 20px; // Reduzido
+  font-size: 1.6em;
+  color: $text-color; /* Azul escuro do logo para o título */
+  margin-bottom: 20px;
   text-align: center;
+  font-family: 'Nirmala Regular', sans-serif; /* Usando a tipografia do logo */
 }
 
 .noEmployeesMessage {
   text-align: center;
-  color: $light-text-color;
+  color: $light-text-color; /* Cinza escuro para a mensagem */
   font-style: italic;
-  padding: 15px; // Reduzido
-  font-size: 0.95em; // Reduzido
+  padding: 15px;
+  font-size: 0.95em;
 }
 
 .list {
@@ -32,63 +34,108 @@
 
 .listItem {
   display: flex;
-  flex-wrap: wrap; // Permite quebrar linha em telas pequenas
-  align-items: center;
+  flex-direction: column; /* Altera para coluna em mobile primeiro */
   justify-content: space-between;
-  padding: 12px 15px; // Reduzido de 15px 20px
-  margin-bottom: 8px; // Reduzido de 10px
-  background-color: #f9f9f9; // Um pouco mais claro
-  border: 1px solid #f0f0f0; // Borda mais clara
-  border-radius: 6px; // Um pouco menor
-  box-shadow: 0 1px 3px rgba(0,0,0,0.03); // Sombra mais leve
-  font-size: 0.9em; // Reduzido
+  padding: 12px 15px;
+  margin-bottom: 8px;
+  background-color: lighten($color-light-grey, 3%); /* Um cinza muito claro, quase branco, da paleta */
+  border: 1px solid $color-light-grey; /* Borda com o cinza mais claro */
+  border-radius: 8px; /* Cantos um pouco maiores para suavidade */
+  box-shadow: 0 1px 4px rgba(0,0,0,0.05); /* Sombra um pouco mais visível */
+  font-size: 0.9em;
+  transition: background-color 0.2s ease, transform 0.2s ease; /* Adiciona transição para hover */
+
+  &:hover {
+    background-color: lighten($color-light-grey, 1%); /* Clareia ligeiramente no hover */
+    transform: translateY(-2px); /* Efeito 3D sutil no hover */
+  }
 }
 
 .employeeNameLink {
-  // Já definido globalmente/no componente, apenas garantindo que o estilo minimalista seja aplicado
   text-decoration: none;
-  color: $primary-color;
+  color: $primary-color; /* Verde vibrante da paleta para o link do nome */
   font-weight: 600;
-  flex-basis: 100%; // Ocupa a linha inteira em mobile, se necessário
-  margin-bottom: 5px; // Espaço abaixo do nome em mobile
+  width: 100%; /* Ocupa a largura total em mobile */
+  margin-bottom: 5px; /* Espaço abaixo do nome em mobile */
 
   &:hover {
-    color: darken($primary-color, 10%);
+    color: darken($primary-color, 10%); /* Escurece no hover */
     text-decoration: underline;
   }
 }
 
 .employeeName {
-  font-size: 1.1em; // Nome um pouco maior dentro do item
+  font-size: 1.1em; /* Nome um pouco maior dentro do item */
+}
+
+.employeeDetailsRow { /* NOVO: Para agrupar email, role e date */
+  display: flex;
+  flex-wrap: wrap; /* Permite quebrar em telas menores */
+  width: 100%; /* Ocupa a largura total */
+  justify-content: space-between; /* Espaçamento entre os itens */
+  align-items: center; /* Alinha verticalmente */
 }
 
 .employeeEmail,
 .employeeRole,
 .employeeDate {
-  color: $light-text-color;
-  flex-basis: calc(50% - 5px); // Ajuste para 2 colunas
-  text-align: left;
-  margin-top: 5px; // Espaço acima dos detalhes em mobile
+  color: $light-text-color; /* Cinza escuro para detalhes */
+  font-size: 0.9em; /* Garante que esses textos sejam um pouco menores */
+  flex: 1 1 auto; /* Flexível para ocupar espaço, mas não diminuir demais */
+  min-width: 100px; /* Largura mínima para evitar quebra excessiva */
+  text-align: left; /* Padrão de alinhamento */
+  margin-top: 5px; /* Espaço acima dos detalhes em mobile */
 
-  &:nth-child(even) { // Aplica a cada segundo elemento
-    text-align: right;
+  /* Para alinhamento em duas colunas em telas muito pequenas (se aplicável) */
+  &:nth-child(odd) {
+      text-align: left;
+  }
+  &:nth-child(even) {
+      text-align: right;
   }
 }
 
-@media (min-width: 768px) { // Desktop view
+@media (min-width: 768px) { /* Desktop view */
   .listItem {
-    flex-wrap: nowrap; // Não quebra linha
-    justify-content: space-between;
-    .employeeNameLink {
-      flex-basis: auto; // Volta ao normal
-      margin-bottom: 0;
+    flex-direction: row; /* Volta para linha em desktop */
+    align-items: center;
+  }
+
+  .employeeNameLink {
+    flex-basis: 30%; /* Nome ocupa uma largura fixa ou base */
+    margin-bottom: 0;
+  }
+
+  .employeeDetailsRow {
+    flex-wrap: nowrap; /* Não quebra linha em desktop */
+    flex-grow: 1; /* Permite que a linha de detalhes ocupe o restante do espaço */
+    justify-content: flex-end; /* Alinha os detalhes à direita */
+    gap: 20px; /* Espaço entre os detalhes */
+  }
+
+  .employeeEmail,
+  .employeeRole,
+  .employeeDate {
+    flex-basis: auto; /* Remove a base flex para que o conteúdo defina a largura */
+    min-width: unset; /* Remove min-width */
+    text-align: right; /* Alinha todos os detalhes à direita em desktop */
+    margin-top: 0;
+    
+    /* Remove os alinhamentos específicos de odd/even para desktop */
+    &:nth-child(odd),
+    &:nth-child(even) {
+        text-align: right;
     }
-    .employeeEmail,
-    .employeeRole,
-    .employeeDate {
-      flex-basis: auto;
-      margin-top: 0;
-      text-align: unset; // Remove alinhamento específico
-    }
+  }
+}
+
+@media (max-width: 480px) { /* Ajustes para telas de celular muito pequenas */
+  .employeeEmail,
+  .employeeRole,
+  .employeeDate {
+      flex-basis: 100%; /* Cada um ocupa uma linha inteira */
+      text-align: left; /* Alinha à esquerda para leitura fácil */
+      margin-top: 2px;
+      margin-bottom: 2px;
   }
 }

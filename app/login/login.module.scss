@@ -1,3 +1,5 @@
+// app/login/login.module.scss
+
 @import "styles/variables"; // Importa suas variáveis globais
 
 .loginContainer {
@@ -6,15 +8,16 @@
   align-items: center;
   justify-content: center;
   min-height: 100vh;
-  // Gradiente mais suave e moderno
-  background: linear-gradient(135deg, #e0f2f7, #d0e8f0);
-  width: 100%;
   padding: 20px; // Adiciona padding para telas pequenas
+  // Gradiente com cores da paleta da Casa Libelle
+  background: linear-gradient(135deg, $gradient-start, $gradient-end); /*cite: image_22653c.jpg*/
+  width: 100%;
   box-sizing: border-box; // Garante que padding não cause overflow
+  font-family: 'Roboto', sans-serif; /* Usando a tipografia de apoio */
 }
 
 .loginCard {
-  background-color: $background-card;
+  background-color: $background-card; /* Branco para o card */
   padding: 40px; // Aumentado para um feel mais premium
   border-radius: 12px; // Cantos mais arredondados
   box-shadow: 0 12px 30px rgba(0, 0, 0, 0.1); // Sombra um pouco mais proeminente, mas ainda suave
@@ -37,11 +40,12 @@
 }
 
 .title {
-  color: $primary-color;
+  color: $text-color; /* Azul escuro do logo para o título */
   margin-bottom: 30px; // Mais espaço
   font-size: 2.5em; // Maior e mais impactante
   font-weight: 700; // Mais bold
   letter-spacing: -0.03em; // Ajuste para tipografia moderna
+  font-family: 'Nirmala Regular', sans-serif; /* Usando a tipografia do logo */
 }
 
 .formGroup {
@@ -53,30 +57,30 @@
   display: block;
   margin-bottom: 8px; // Mais espaço
   font-weight: 600; // Mais bold
-  color: $text-color; // Usar a cor de texto principal
+  color: $text-color; // Azul escuro para os labels
   font-size: 1em; // Tamanho padrão
 }
 
 .formGroup input {
   width: 100%;
   padding: 14px 16px; // Mais padding para maior área de clique/toque
-  border: 1px solid $border-color;
+  border: 1px solid $border-color; /* Borda cinza clara */
   border-radius: 8px; // Cantos mais suaves
   font-size: 1.05em;
   box-sizing: border-box;
   transition: border-color 0.2s ease, box-shadow 0.2s ease;
-  background-color: #fcfdff; // Um fundo levemente diferente para o input
+  background-color: $color-white; // Fundo branco para o input
 
   &:focus {
-    border-color: darken($primary-color, 5%); // Borda ligeiramente mais escura
+    border-color: $primary-color; /* Cor primária na borda ao focar */
     outline: none;
-    box-shadow: 0 0 0 3px rgba($primary-color, 0.25); // Sombra mais pronunciada ao focar
-    background-color: #ffffff; // Fundo branco ao focar
+    box-shadow: 0 0 0 3px rgba($primary-color, 0.25); // Sombra mais pronunciada ao focar com cor primária
+    background-color: $color-white; // Fundo branco ao focar
   }
 }
 
 .loginButton {
-  background-color: $primary-color;
+  background-color: $primary-color; /* Verde vibrante da paleta para o botão */
   color: white;
   padding: 15px 30px; // Mais padding para um botão mais robusto
   border: none;
@@ -87,17 +91,17 @@
   width: 100%;
   margin-top: 25px; // Mais espaço antes do botão
   transition: background-color 0.2s ease, transform 0.1s ease, box-shadow 0.2s ease;
-  box-shadow: 0 4px 10px rgba($primary-color, 0.2); // Sombra para o botão
+  box-shadow: 0 4px 10px rgba($primary-color, 0.2); // Sombra para o botão com cor primária
 
   &:hover {
-    background-color: darken($primary-color, 8%); // Darken um pouco menos agressivo
+    background-color: darken($primary-color, 8%); // Escurece no hover
     transform: translateY(-2px); // Efeito 3D sutil
-    box-shadow: 0 6px 15px rgba($primary-color, 0.3); // Sombra aumentada no hover
+    box-shadow: 0 6px 15px rgba($primary-color, 0.3); // Sombra aumentada no hover com cor primária
   }
 
   &:active {
     transform: translateY(0); // Retorna à posição original
-    box-shadow: 0 2px 5px rgba($primary-color, 0.2); // Sombra reduzida
+    box-shadow: 0 2px 5px rgba($primary-color, 0.2); // Sombra reduzida com cor primária
   }
 }
 
@@ -105,11 +109,12 @@
   display: block;
   margin-top: 20px; // Mais espaço
   font-size: 0.95em; // Ligeiramente maior
-  color: $light-text-color;
+  color: $light-text-color; /* Cinza escuro para texto de apoio */
   text-decoration: none; // Garantir que não há sublinhado por padrão
+  font-family: 'Roboto', sans-serif; /* Usando a tipografia de apoio */
 
   &:hover {
-    color: $primary-color; // Mudar a cor no hover
+    color: $primary-color; // Mudar a cor no hover para a primária
     text-decoration: underline; // Adicionar sublinhado no hover
   }
 }
