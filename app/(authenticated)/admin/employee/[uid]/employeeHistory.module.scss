@@ -30,17 +30,26 @@
   color: #dc3545;
 }
 
-/* New: Filter Container Styles */
+/* Novo: Container para filtros e botão de download */
+.filterAndDownloadSection {
+  display: flex;
+  flex-wrap: wrap; /* Permite quebrar linha em telas menores */
+  gap: 20px; /* Espaço entre o filtro e o botão */
+  align-items: flex-end; /* Alinha o botão com a parte de baixo do filtro */
+  margin-bottom: 30px; /* Espaço abaixo desta seção */
+}
+
+/* Existing Filter Container Styles (ajustados) */
 .filterContainer {
   display: flex;
-  flex-wrap: wrap; /* Permite que os itens quebrem a linha em telas menores */
-  gap: 15px; /* Espaçamento entre os itens */
+  flex-wrap: wrap;
+  gap: 15px;
   align-items: center;
-  margin-bottom: 30px;
   padding: 20px;
-  background-color: #e9ecef; /* Um tom mais claro para o fundo do filtro */
+  background-color: #e9ecef;
   border-radius: 8px;
   box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
+  flex-grow: 1; /* Permite que o filtro ocupe o espaço disponível */
 
   label {
     font-weight: bold;
@@ -64,7 +73,7 @@
   }
 
   .applyFilterButton {
-    background-color: #28a745; /* Verde para o botão de aplicar */
+    background-color: #28a745;
     color: white;
     padding: 10px 20px;
     border: none;
@@ -74,7 +83,7 @@
     transition: background-color 0.3s ease;
 
     &:hover {
-      background-color: #218838; /* Verde mais escuro no hover */
+      background-color: #218838;
     }
 
     &:disabled {
@@ -84,6 +93,68 @@
   }
 }
 
+/* NOVO: Botão de Download PDF na página de histórico do funcionário */
+.downloadReportButton {
+  background-color: #dc3545; /* Vermelho/perigo para o PDF */
+  color: white;
+  padding: 12px 25px;
+  border: none;
+  border-radius: 5px;
+  font-size: 1.1em;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+  display: flex;
+  align-items: center;
+  gap: 10px; /* Espaçamento entre ícone e texto */
+  justify-content: center; /* Centraliza o conteúdo do botão */
+  white-space: nowrap; /* Impede quebra de linha do texto no botão */
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1); /* Sombra para destacar */
+
+  &:hover {
+    background-color: #c82333; /* Vermelho mais escuro no hover */
+  }
+
+  &:disabled {
+    background-color: #e38d97;
+    cursor: not-allowed;
+  }
+}
+
+.buttonIcon {
+  font-size: 1.2em;
+}
+
+.spinnerIcon {
+  font-size: 1.2em;
+  animation: spin 1s linear infinite; /* Animação de spinner */
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+/* NOVO: Estilos para o conteúdo do relatório que será capturado pelo PDF */
+.reportContent {
+  background-color: #ffffff; /* Fundo branco para o relatório */
+  padding: 25px;
+  border-radius: 8px;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08); /* Sombra mais acentuada para o box do relatório */
+}
+
+.reportHeaderTitle {
+  font-size: 1.8em;
+  color: #2c3e50;
+  margin-bottom: 5px;
+  text-align: center;
+}
+
+.reportPeriod {
+  font-size: 1em;
+  color: #666;
+  margin-bottom: 20px;
+  text-align: center;
+}
 
 /* Responsive adjustments */
 @media (max-width: 768px) {
@@ -96,11 +167,19 @@
   .subtitle {
     font-size: 1em;
   }
+  .filterAndDownloadSection {
+    flex-direction: column; /* Empilha em telas pequenas */
+    align-items: stretch; /* Estica os itens */
+    gap: 15px; /* Reduz o gap */
+  }
   .filterContainer {
-    flex-direction: column; /* Empilha os itens em telas pequenas */
-    align-items: stretch; /* Estica os inputs */
+    flex-direction: column;
+    align-items: stretch;
     .dateInput, .applyFilterButton {
-      max-width: 100%; /* Permite ocupar toda a largura */
+      max-width: 100%;
     }
+  }
+  .downloadReportButton {
+    width: 100%; /* Botão ocupa toda a largura em telas pequenas */
   }
 }

@@ -6,7 +6,7 @@
   border-radius: 8px;
   box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
   width: 100%;
-  max-width: 700px;
+  // max-width: 700px;
   margin: 0 auto; /* Centraliza a tabela */
 }
 
@@ -21,9 +21,9 @@
 .dayHeader {
   background-color: #007bff; /* Cor primária */
   color: white;
-  padding: 12px 20px;
+  padding: 10px 20px;
   margin: 0;
-  font-size: 1.3em;
+  font-size: 1.1em;
   display: flex;
   align-items: center;
   gap: 10px;
@@ -40,24 +40,47 @@
 }
 
 .punchItem {
-  display: flex;
+  display: inline-block;
   justify-content: space-between;
   align-items: center;
-  padding: 12px 20px;
+  padding: 10px 20px;
   border-bottom: 1px solid #f0f0f0;
   font-size: 1em;
   color: #333;
+  cursor: pointer; /* Indica que o item é clicável */
+  transition: background-color 0.2s ease; /* Suaviza a transição de fundo */
 
   &:last-child {
     border-bottom: none;
+  }
+
+  &:hover {
+    background-color: #f5f5f5; /* Efeito visual ao passar o mouse */
+  }
+
+  &.editing { /* NOVO: Estilo quando o item está em modo de edição */
+    background-color: #e9f5ff; /* Fundo mais claro para indicar edição */
+    border: 1px solid #007bff; /* Borda para destaque */
+    padding: 9px 19px; /* Ajuste para compensar a borda */
+    cursor: default; /* Altera o cursor para não indicar mais clique para editar */
   }
 }
 
 .punchDetails {
   display: flex;
   align-items: center;
-  gap: 10px;
+  gap: 15px;
 }
+
+/* NOVO: Estilo para o wrapper do conteúdo normal, para que o clique funcione corretamente */
+.displayContent {
+    flex-grow: 1; /* Permite que o conteúdo ocupe o espaço */
+    display: flex; /* Mantém punchDetails e punchTime alinhados */
+    justify-content: space-between;
+    align-items: center;
+    width: 100%; /* Garante que ocupe a largura completa do item */
+}
+
 
 .punchType {
   font-weight: bold;
@@ -86,26 +109,127 @@
   font-size: 1.1em;
 }
 
+/* Estilos para o formulário de edição dentro do item da lista */
+.editForm {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  align-items: center;
+  width: 100%;
+}
+
+.editInput,
+.editSelect {
+  padding: 6px 10px;
+  border: 1px solid #ced4da;
+  border-radius: 4px;
+  font-size: 0.9em;
+  flex: 1;
+  min-width: 100px;
+  box-sizing: border-box;
+  transition: border-color 0.2s ease;
+
+  &:focus {
+    border-color: #007bff;
+    outline: none;
+    box-shadow: 0 0 0 0.2rem rgba(0, 123, 255, 0.25);
+  }
+}
+
+.editSelect {
+  flex: 1.2;
+}
+
+.editActions {
+  display: flex;
+  gap: 5px;
+  margin-left: auto;
+}
+
+/* Estilos para os botões de ação na lista */
+/* REMOVIDO: .editButton {} pois não terá mais botão de editar */
+.saveButton,
+.cancelButton {
+  padding: 6px 12px;
+  border: none;
+  border-radius: 5px;
+  font-size: 0.85em;
+  cursor: pointer;
+  transition: background-color 0.2s ease, transform 0.1s ease;
+  white-space: nowrap;
+
+  &:active {
+    transform: translateY(1px);
+  }
+}
+
+.saveButton {
+  background-color: #28a745;
+  color: white;
+  &:hover {
+    background-color: #218838;
+  }
+}
+
+.cancelButton {
+  background-color: #6c757d;
+  color: white;
+  &:hover {
+    background-color: #5a6268;
+  }
+}
+
 /* Responsividade */
 @media (max-width: 600px) {
   .historyTableContainer {
     padding: 15px;
   }
   .dayHeader {
-    font-size: 1.1em;
-    padding: 10px 15px;
+    font-size: 1em;
+    padding: 8px 15px;
   }
   .punchItem {
     flex-direction: column;
     align-items: flex-start;
     padding: 10px 15px;
   }
+  .displayContent { /* Ajustado para responsividade */
+      flex-direction: column;
+      align-items: flex-start;
+      margin-bottom: 10px;
+  }
   .punchDetails {
-    flex-direction: column;
-    align-items: flex-start;
-    gap: 5px;
+    flex-direction: row;
+    align-items: center;
+    gap: 10px;
+    width: 100%;
+    justify-content: space-between;
   }
   .punchTime {
     margin-left: 0;
+  }
+
+  .editForm {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 8px;
+  }
+
+  .editInput,
+  .editSelect {
+    width: 100%;
+    min-width: unset;
+  }
+
+  .editActions {
+    width: 100%;
+    justify-content: space-around;
+    margin-left: 0;
+  }
+
+  .saveButton,
+  .cancelButton {
+    flex: 1;
+    margin-right: 0;
   }
 }
