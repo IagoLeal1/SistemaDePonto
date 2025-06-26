@@ -5,7 +5,7 @@ import { useState, useEffect } from 'react';
 import { auth } from '@/lib/firebase';
 import { signInWithEmailAndPassword, signOut } from 'firebase/auth'; // Importe signOut também para o logout
 import { useRouter } from 'next/navigation';
-import { useAuth } from '@/src/app/context/AuthContext';
+import { useAuth } from '@/src/app/context/AuthContext'; // Note o caminho para o seu AuthContext
 import styles from './login.module.scss';
 import Link from 'next/link';
 
@@ -14,16 +14,26 @@ export default function LoginPage() {
   const [password, setPassword] = useState('');
   const [error, setError] = useState<string | null>(null);
   const router = useRouter();
-  const { currentUser, loading } = useAuth();
+  const { currentUser, loading, isAdmin } = useAuth(); // Certifique-se de que isAdmin está disponível aqui
 
   useEffect(() => {
     if (!loading && currentUser) {
-      // Se o usuário está logado, defina um cookie de sessão simples
+      // Define o cookie de sessão para indicar que o utilizador está logado
       document.cookie = 'user_logged_in=true; path=/; max-age=' + (60 * 60 * 24 * 7); // Cookie válido por 7 dias
-      // REDIRECIONAR PARA O DASHBOARD DO ADMIN
-      router.push('/admin/dashboard');
+
+      // Define o cookie com a função do utilizador (admin ou employee)
+      // Assume que 'isAdmin' está corretamente derivado no seu AuthContext
+      const userRole = isAdmin ? 'admin' : 'employee';
+      document.cookie = `user_role=${userRole}; path=/; max-age=` + (60 * 60 * 24 * 7);
+
+      // Redireciona com base na função
+      if (isAdmin) {
+        router.push('/admin/dashboard');
+      } else {
+        router.push('/ponto'); // Redireciona para /ponto se não for admin
+      }
     }
-  }, [currentUser, loading, router]);
+  }, [currentUser, loading, isAdmin, router]); // Adicionado 'isAdmin' às dependências
 
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -34,40 +44,40 @@ export default function LoginPage() {
     } catch (err: any) {
       console.error("Erro ao fazer login:", err);
       if (err.code === 'auth/invalid-credential') {
-        setError('E-mail ou senha incorretos.');
+        setError('E-mail ou palavra-passe incorretos.');
       } else if (err.code === 'auth/user-not-found') {
-        setError('Usuário não encontrado.');
+        setError('Utilizador não encontrado.');
       } else if (err.code === 'auth/wrong-password') {
-        setError('Senha incorreta.');
+        setError('Palavra-passe incorreta.');
       } else {
         setError(`Erro ao fazer login: ${err.message}`);
       }
     }
   };
 
-  // Lógica para lidar com logout (se você tiver um botão de logout em algum lugar)
+  // Lógica para lidar com logout (se tiver um botão de logout em algum lugar)
   const handleLogout = async () => {
     try {
       await signOut(auth);
-      // Remova o cookie ao fazer logout
+      // Remove os cookies ao fazer logout
       document.cookie = 'user_logged_in=; path=/; expires=Thu, 01 Jan 1970 00:00:00 UTC;';
+      document.cookie = 'user_role=; path=/; expires=Thu, 01 Jan 1970 00:00:00 UTC;'; // REMOVER ESTE TAMBÉM
       router.push('/login'); // Redireciona para a página de login após o logout
     } catch (error) {
       console.error("Erro ao fazer logout:", error);
     }
   };
 
-
   if (loading) {
     return (
       <div className={styles.loadingContainer}>
-        <p>Verificando sessão...</p>
+        <p>A verificar sessão...</p>
       </div>
     );
   }
 
-  // Se o usuário já estiver logado, não renderize o formulário de login aqui
-  // O useEffect já lidou com o redirecionamento.
+  // Se o utilizador já estiver logado, não renderize o formulário de login aqui
+  // O useEffect já lidou com o redirecionamento para a página correta.
   if (currentUser) {
     return null;
   }
@@ -89,7 +99,7 @@ export default function LoginPage() {
             />
           </div>
           <div className={styles.formGroup}>
-            <label htmlFor="password">Senha:</label>
+            <label htmlFor="password">Palavra-passe:</label>
             <input
               type="password"
               id="password"
@@ -105,7 +115,7 @@ export default function LoginPage() {
         <p className={styles.registerPrompt}>
           Não tem uma conta?{' '}
           <Link href="/register" className={styles.registerLink}>
-            Registre-se
+            Registe-se
           </Link>
         </p>
       </div>

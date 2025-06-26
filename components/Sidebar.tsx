@@ -18,6 +18,9 @@ export default function Sidebar() {
   const handleLogout = async () => {
     try {
       await auth.signOut();
+      // Remove os cookies ao fazer logout
+      document.cookie = 'user_logged_in=; path=/; expires=Thu, 01 Jan 1970 00:00:00 UTC;';
+      document.cookie = 'user_role=; path=/; expires=Thu, 01 Jan 1970 00:00:00 UTC;';
       router.push('/login');
     } catch (error) {
       console.error("Erro ao fazer logout:", error);
@@ -57,7 +60,14 @@ export default function Sidebar() {
               <span className={styles.navItemText}>Dashboard</span>
             </Link>
             {/* Adicionei o link para 'Funcionários' se for admin */}
-            
+            {/* Exemplo de link para a lista de funcionários (se tiver uma) */}
+            <Link
+              href="/admin/employees" // Substitua por sua rota real de lista de funcionários
+              className={`${styles.navItem} ${pathname.startsWith('/admin/employees') ? styles.active : ''}`}
+            >
+              <FaUsers className={styles.icon} />
+              <span className={styles.navItemText}>Funcionários</span>
+            </Link>
           </>
         )}
 
@@ -67,7 +77,6 @@ export default function Sidebar() {
           <button onClick={handleLogout} className={styles.logoutButton}>
             <FaSignOutAlt className={styles.icon} />
             <span className={styles.logoutButtonText}>Sair</span>
-            {/* Removi a linha do e-mail conforme sua solicitação */}
           </button>
         ) : (
           <Link href="/login" className={styles.navItem}>
