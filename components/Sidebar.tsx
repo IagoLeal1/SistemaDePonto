@@ -2,7 +2,7 @@
 'use client';
 
 import Link from 'next/link';
-import { useAuth } from '@/app/context/AuthContext';
+import { useAuth } from '@/src/app/context/AuthContext';
 import { auth } from '@/lib/firebase';
 import { useRouter, usePathname } from 'next/navigation';
 import styles from './Sidebar.module.scss';

@@ -20,7 +20,7 @@
     ],
     "paths": {
       "@/*": ["./*"], // ESTA É A LINHA MAIS IMPORTANTE AQUI
-      "styles/*": ["./app/styles/*"],
+      "styles/*": ["src/app/styles/*"],
     },
     "baseUrl": "." // E ESTA OUTRA LINHA
   },

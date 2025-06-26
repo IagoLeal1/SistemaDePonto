@@ -3,12 +3,21 @@
 
 import { useState, useEffect, useCallback, useRef } from 'react';
 import { db } from '@/lib/firebase';
-import { collection, query, where, orderBy, getDocs, limit, Timestamp, doc, updateDoc } from 'firebase/firestore'; // Importe doc e updateDoc
-import { useAuth } from '@/app/context/AuthContext';
+import { collection, query, where, orderBy, getDocs, limit, Timestamp, doc, updateDoc } from 'firebase/firestore';
+import { useAuth } from '@/src/app/context/AuthContext';
 import { useRouter, useParams } from 'next/navigation';
 import PunchHistoryTable from '@/components/PunchHistoryTable';
 import styles from './employeeHistory.module.scss';
 import { FaFilePdf, FaSpinner } from 'react-icons/fa';
+
+// Importar uma biblioteca de datas é altamente recomendado para evitar problemas de fuso horário
+// Ex: npm install date-fns date-fns-tz
+import { format, parseISO } from 'date-fns';
+// **CORREÇÃO AQUI**: Importa as funções corretas de date-fns-tz
+import { toZonedTime } from 'date-fns-tz'; // toUtc foi removido e será substituído por lógica manual
+// Você também pode precisar de um locale para formatar nomes de dias/meses em português
+import { ptBR } from 'date-fns/locale';
+
 
 interface BatidaDePonto {
   id: string;
@@ -23,6 +32,10 @@ interface Employee {
   email: string;
   role: 'admin' | 'employee';
 }
+
+// Defina o fuso horário padrão do Brasil para consistência
+const BRAZIL_TIMEZONE = 'America/Sao_Paulo'; // Ou 'America/Fortaleza', 'America/Cuiaba', etc., dependendo da região
+const BRAZIL_OFFSET_HOURS = -3; // Offset padrão do Brasil (UTC-3), pode variar com Horário de Verão
 
 export default function EmployeeHistoryPage() {
   const { currentUser, loading, isAdmin } = useAuth();
@@ -42,12 +55,8 @@ export default function EmployeeHistoryPage() {
 
   // Estados para a funcionalidade de edição
   const [editingRecordId, setEditingRecordId] = useState<string | null>(null);
-  // Partial<BatidaDePonto> porque podemos estar editando apenas alguns campos (data, hora, tipo)
-  // Além disso, adicionamos timestamp_date e timestamp_time para facilitar a manipulação no input
   const [editedRecordData, setEditedRecordData] = useState<Partial<BatidaDePonto> & { timestamp_date?: string, timestamp_time?: string } | null>(null);
 
-
-  // Ref para o conteúdo que será convertido em PDF
   const reportContentRef = useRef<HTMLDivElement>(null);
 
   console.log("Page Render: loading:", loading, "currentUser:", !!currentUser, "isAdmin:", isAdmin, "employeeUid:", employeeUid);
@@ -85,16 +94,39 @@ export default function EmployeeHistoryPage() {
         where('userId', '==', employeeUid)
       );
 
+      // Ao criar as datas de filtro, garanta que elas estão no fuso horário correto
       if (startDate) {
-        const startOfDay = new Date(startDate);
-        startOfDay.setHours(0, 0, 0, 0);
-        recordsQuery = query(recordsQuery, where('timestamp', '>=', Timestamp.fromDate(startOfDay)));
+        const startOfDayLocal = parseISO(startDate); // YYYY-MM-DD é interpretado no fuso horário local do browser
+        startOfDayLocal.setHours(0, 0, 0, 0); // Ajusta para o início do dia local
+
+        // **WORKAROUND para toUtc:** Ajusta manualmente a data local para o fuso horário UTC do Brasil
+        // Pega o offset do browser para a data e hora atual.
+        const browserOffsetMinutes = startOfDayLocal.getTimezoneOffset(); // Diferença em minutos entre UTC e fuso horário local do browser
+        // Converte para horas e inverte o sinal para representar o offset UTC (ex: UTC-3 seria -3)
+        const browserOffsetHours = -browserOffsetMinutes / 60; 
+        
+        // Calcula a diferença em horas entre o fuso horário do browser e o fuso horário do Brasil
+        // Se browser é UTC-5 e Brasil é UTC-3, Brasil é 2h *à frente* do browser.
+        const differenceHours = BRAZIL_OFFSET_HOURS - browserOffsetHours; 
+        
+        // Ajusta a data local adicionando/subtraindo a diferença para 'simular' o horário no Brasil
+        const startOfDayUtc = new Date(startOfDayLocal.getTime() + (differenceHours * 60 * 60 * 1000));
+        
+        recordsQuery = query(recordsQuery, where('timestamp', '>=', Timestamp.fromDate(startOfDayUtc)));
       }
 
       if (endDate) {
-        const endOfDay = new Date(endDate);
-        endOfDay.setHours(23, 59, 59, 999);
-        recordsQuery = query(recordsQuery, where('timestamp', '<=', Timestamp.fromDate(endOfDay)));
+        const endOfDayLocal = parseISO(endDate);
+        endOfDayLocal.setHours(23, 59, 59, 999);
+
+        // **WORKAROUND para toUtc:** Ajusta manualmente a data local para o fuso horário UTC do Brasil
+        const browserOffsetMinutes = endOfDayLocal.getTimezoneOffset();
+        const browserOffsetHours = -browserOffsetMinutes / 60;
+        const differenceHours = BRAZIL_OFFSET_HOURS - browserOffsetHours; 
+        
+        const endOfDayUtc = new Date(endOfDayLocal.getTime() + (differenceHours * 60 * 60 * 1000));
+
+        recordsQuery = query(recordsQuery, where('timestamp', '<=', Timestamp.fromDate(endOfDayUtc)));
       }
 
       recordsQuery = query(recordsQuery, orderBy('timestamp', 'asc'));
@@ -105,7 +137,7 @@ export default function EmployeeHistoryPage() {
         return {
           id: doc.id,
           userId: data.userId,
-          timestamp: data.timestamp.toDate(),
+          timestamp: data.timestamp.toDate(), // Isso retorna um Date em UTC
           type: data.type,
         } as BatidaDePonto;
       });
@@ -158,6 +190,9 @@ export default function EmployeeHistoryPage() {
     setIsDownloading(true);
 
     try {
+      const html2canvas = (await import('html2canvas')).default;
+      const { jsPDF } = await import('jspdf');
+
       const canvas = await html2canvas(reportContentRef.current, {
         scale: 2,
         useCORS: true,
@@ -202,17 +237,19 @@ export default function EmployeeHistoryPage() {
     } finally {
       setIsDownloading(false);
     }
-  }, [employeeInfo, punchRecords, startDate, endDate]);
+  }, [employeeInfo, startDate, endDate]);
 
   // NOVO: Funções de manipulação de edição
   const handleEditClick = useCallback((record: BatidaDePonto) => {
     setEditingRecordId(record.id);
-    // Inicializa editedRecordData com os valores atuais para edição
+    // Converte o timestamp UTC do Firestore para o fuso horário local (Brasil) para exibir nos inputs
+    const zonedDate = toZonedTime(record.timestamp, BRAZIL_TIMEZONE);
+
     setEditedRecordData({
       ...record,
-      // Campos auxiliares para input date/time
-      timestamp_date: record.timestamp.toISOString().split('T')[0],
-      timestamp_time: record.timestamp.toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit', second: '2-digit', hour12: false }),
+      // Campos auxiliares para input date/time, formatados para o fuso horário local do Brasil
+      timestamp_date: format(zonedDate, 'yyyy-MM-dd'),
+      timestamp_time: format(zonedDate, 'HH:mm:ss'),
     });
   }, []);
 
@@ -223,7 +260,7 @@ export default function EmployeeHistoryPage() {
 
   const handleInputChange = useCallback((
     e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>,
-    field: keyof BatidaDePonto | 'timestamp_date' | 'timestamp_time' // Expanda os tipos para os campos auxiliares
+    field: keyof BatidaDePonto | 'timestamp_date' | 'timestamp_time'
   ) => {
     if (editedRecordData) {
       setEditedRecordData(prev => ({
@@ -241,30 +278,44 @@ export default function EmployeeHistoryPage() {
 
     try {
       setError(null);
-      setPageLoading(true); // Pode usar um estado de loading mais granular se quiser     
+      setPageLoading(true);
 
-      // Combina a data e hora dos inputs para criar um novo timestamp
-      const newDateTimeString = `${editedRecordData.timestamp_date}T${editedRecordData.timestamp_time}`; // Removendo o ':00' extra
-      const newTimestamp = new Date(newDateTimeString);
+      // Combina a data e hora dos inputs (que estão no fuso horário local, YYYY-MM-DDTHH:mm:ss)
+      const dateTimeStringLocal = `${editedRecordData.timestamp_date}T${editedRecordData.timestamp_time}`;
+      const parsedDateLocal = parseISO(dateTimeStringLocal); // Isso cria um Date object no fuso horário local do navegador
 
-      if (isNaN(newTimestamp.getTime())) {
-          setError("Data ou hora inválida. Por favor, verifique.");
-          setPageLoading(false);
-          return;
+      // **WORKAROUND para toUtc:** Converte a data/hora local para UTC, assumindo que ela representa o BRAZIL_TIMEZONE.
+      // Esta lógica é necessária porque `toUtc` está a causar erro de build.
+      // Ela calcula a diferença de offset entre o fuso horário do browser e o fuso horário do Brasil (UTC-3).
+      // Adiciona/subtrai essa diferença para "mover" a data local para a perspectiva do fuso horário do Brasil.
+      // O resultado final é um Date object em UTC que pode ser guardado no Firestore.
+      
+      const browserOffsetMinutes = parsedDateLocal.getTimezoneOffset(); // Ex: para UTC-3, retorna 180 (minutos de diferença para UTC)
+      const browserOffsetHours = -browserOffsetMinutes / 60; // Converte para horas e inverte o sinal (ex: 3)
+      
+      const differenceHours = BRAZIL_OFFSET_HOURS - browserOffsetHours; // Diferença entre o offset do Brasil e o do browser
+      
+      // Ajusta o timestamp (em milissegundos) para refletir a hora correta no fuso horário do Brasil,
+      // antes de ser naturalmente convertida para UTC quando o Date object é finalizado.
+      const newTimestampUtc = new Date(parsedDateLocal.getTime() + (differenceHours * 60 * 60 * 1000));
+
+      if (isNaN(newTimestampUtc.getTime())) {
+        setError("Data ou hora inválida. Por favor, verifique.");
+        setPageLoading(false);
+        return;
       }
 
       const recordRef = doc(db, 'batidasDePonto', recordId);
       await updateDoc(recordRef, {
-        timestamp: newTimestamp, // Salva o novo timestamp
-        type: editedRecordData.type, // Salva o novo tipo
-        // userId não muda
+        timestamp: newTimestampUtc, // Salva o novo timestamp (em UTC)
+        type: editedRecordData.type,
       });
 
       // Atualiza a lista de registros no estado local após o salvamento
       setPunchRecords(prevRecords =>
         prevRecords.map(rec =>
-          rec.id === recordId ? { ...rec, timestamp: newTimestamp, type: editedRecordData.type! } : rec
-        ).sort((a, b) => a.timestamp.getTime() - b.timestamp.getTime()) // Reordena após a atualização
+          rec.id === recordId ? { ...rec, timestamp: newTimestampUtc } : rec // Use o timestamp UTC aqui
+        ).sort((a, b) => a.timestamp.getTime() - b.timestamp.getTime())
       );
 
       handleCancelEdit(); // Sai do modo de edição

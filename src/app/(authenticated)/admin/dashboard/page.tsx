@@ -4,7 +4,7 @@
 import { useState, useEffect, useCallback } from 'react';
 import { db } from '@/lib/firebase';
 import { collection, getDocs, query, orderBy } from 'firebase/firestore';
-import { useAuth } from '@/app/context/AuthContext';
+import { useAuth } from '@/src/app/context/AuthContext';
 import { useRouter } from 'next/navigation';
 import styles from './dashboard.module.scss'; // IMPORTA O CSS ESPECÍFICO DO DASHBOARD
 

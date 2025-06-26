@@ -4,7 +4,7 @@
 import './styles/reset.css';    // Importe o reset.css PRIMEIRO
 import './styles/globals.scss'; // Importe o globals.scss depois do reset.css
 import { Inter } from 'next/font/google';
-import { AuthProvider } from '@/app/context/AuthContext';
+import { AuthProvider } from '@/src/app/context/AuthContext';
 // REMOVA: import Sidebar from '@/components/Sidebar';
 // REMOVA: import { usePathname } from 'next/navigation';
 

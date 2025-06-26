@@ -3,9 +3,9 @@
 
 import { useState, useEffect } from 'react';
 import { auth } from '@/lib/firebase';
-import { signInWithEmailAndPassword } from 'firebase/auth';
+import { signInWithEmailAndPassword, signOut } from 'firebase/auth'; // Importe signOut também para o logout
 import { useRouter } from 'next/navigation';
-import { useAuth } from '@/app/context/AuthContext';
+import { useAuth } from '@/src/app/context/AuthContext';
 import styles from './login.module.scss';
 import Link from 'next/link';
 
@@ -18,7 +18,10 @@ export default function LoginPage() {
 
   useEffect(() => {
     if (!loading && currentUser) {
-      router.push('/ponto');
+      // Se o usuário está logado, defina um cookie de sessão simples
+      document.cookie = 'user_logged_in=true; path=/; max-age=' + (60 * 60 * 24 * 7); // Cookie válido por 7 dias
+      // REDIRECIONAR PARA O DASHBOARD DO ADMIN
+      router.push('/admin/dashboard');
     }
   }, [currentUser, loading, router]);
 
@@ -27,6 +30,7 @@ export default function LoginPage() {
     setError(null);
     try {
       await signInWithEmailAndPassword(auth, email, password);
+      // O useEffect acima lidará com o redirecionamento e a configuração do cookie
     } catch (err: any) {
       console.error("Erro ao fazer login:", err);
       if (err.code === 'auth/invalid-credential') {
@@ -41,24 +45,37 @@ export default function LoginPage() {
     }
   };
 
+  // Lógica para lidar com logout (se você tiver um botão de logout em algum lugar)
+  const handleLogout = async () => {
+    try {
+      await signOut(auth);
+      // Remova o cookie ao fazer logout
+      document.cookie = 'user_logged_in=; path=/; expires=Thu, 01 Jan 1970 00:00:00 UTC;';
+      router.push('/login'); // Redireciona para a página de login após o logout
+    } catch (error) {
+      console.error("Erro ao fazer logout:", error);
+    }
+  };
+
+
   if (loading) {
     return (
-      <div className={styles.loadingContainer}> {/* Certifique-se de ter este estilo no seu SCSS */}
+      <div className={styles.loadingContainer}>
         <p>Verificando sessão...</p>
       </div>
     );
   }
 
+  // Se o usuário já estiver logado, não renderize o formulário de login aqui
+  // O useEffect já lidou com o redirecionamento.
   if (currentUser) {
     return null;
   }
 
   return (
-    // O loginContainer agora será o invólucro de tela cheia que centraliza
     <div className={styles.loginContainer}>
-      {/* O loginCard é a SUA BOX visível */}
       <div className={styles.loginCard}>
-        <h1 className={styles.title}>Ponto Digital</h1> {/* Título dentro da box */}
+        <h1 className={styles.title}>Ponto Digital</h1>
 
         <form onSubmit={handleLogin} className={styles.loginForm}>
           <div className={styles.formGroup}>
@@ -81,7 +98,7 @@ export default function LoginPage() {
               required
             />
           </div>
-          {error && <p className="error-message">{error}</p>} {/* Mensagem de erro global */}
+          {error && <p className="error-message">{error}</p>}
           <button type="submit" className={styles.loginButton}>Entrar</button>
         </form>
 

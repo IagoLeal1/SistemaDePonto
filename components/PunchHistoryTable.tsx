@@ -5,6 +5,11 @@ import React from 'react';
 import styles from './PunchHistoryTable.module.scss';
 import { FaCalendarAlt, FaSignInAlt, FaSignOutAlt, FaUtensils } from 'react-icons/fa'; // Import icons
 
+// Importar date-fns para formatação e date-fns-tz para fuso horário
+import { format, parseISO } from 'date-fns';
+import { toZonedTime } from 'date-fns-tz';
+import { ptBR } from 'date-fns/locale'; // Para nomes de dias/meses em português
+
 interface BatidaDePonto {
   id: string;
   userId: string;
@@ -16,17 +21,20 @@ interface PunchHistoryTableProps {
   records: BatidaDePonto[];
   editingRecordId: string | null;
   editedRecordData: Partial<BatidaDePonto> & { timestamp_date?: string, timestamp_time?: string } | null;
-  onEdit: (record: BatidaDePonto) => void; // Esta função será chamada ao clicar no item
+  onEdit: (record: BatidaDePonto) => void;
   onSave: (recordId: string) => void;
   onCancel: () => void;
   onInputChange: (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>, field: keyof BatidaDePonto | 'timestamp_date' | 'timestamp_time') => void;
 }
 
+// Defina o fuso horário padrão do Brasil para consistência
+const BRAZIL_TIMEZONE = 'America/Sao_Paulo';
+
 export default function PunchHistoryTable({
   records,
   editingRecordId,
   editedRecordData,
-  onEdit, // Recebemos onEdit aqui
+  onEdit,
   onSave,
   onCancel,
   onInputChange,
@@ -54,7 +62,12 @@ export default function PunchHistoryTable({
 
   // Group records by day
   const groupedRecords: { [key: string]: BatidaDePonto[] } = records.reduce((acc, record) => {
-    const dateKey = record.timestamp.toISOString().split('T')[0]; // YYYY-MM-DD
+    // Para agrupar, precisamos normalizar a data para o fuso horário de exibição (Brasil)
+    // Primeiro, converte o timestamp (que é UTC) para o fuso horário do Brasil
+    const zonedDate = toZonedTime(record.timestamp, BRAZIL_TIMEZONE);
+    // Em seguida, formata para obter a chave do dia (YYYY-MM-DD) no fuso horário do Brasil
+    const dateKey = format(zonedDate, 'yyyy-MM-dd');
+
     if (!acc[dateKey]) {
       acc[dateKey] = [];
     }
@@ -63,7 +76,12 @@ export default function PunchHistoryTable({
   }, {} as { [key: string]: BatidaDePonto[] });
 
   // Sort dates for display (latest date first)
-  const sortedDates = Object.keys(groupedRecords).sort((a, b) => new Date(b).getTime() - new Date(a).getTime());
+  // Certifica-se que a ordenação é feita com base na data no fuso horário do Brasil
+  const sortedDates = Object.keys(groupedRecords).sort((a, b) => {
+    const dateA = toZonedTime(parseISO(a), BRAZIL_TIMEZONE);
+    const dateB = toZonedTime(parseISO(b), BRAZIL_TIMEZONE);
+    return dateB.getTime() - dateA.getTime();
+  });
 
   return (
     <div className={styles.historyTableContainer}>
@@ -74,7 +92,8 @@ export default function PunchHistoryTable({
           <div key={dateKey} className={styles.dayGroup}>
             <h3 className={styles.dayHeader}>
               <FaCalendarAlt className={styles.calendarIcon} />
-              {new Date(dateKey).toLocaleDateString('pt-BR', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' })}
+              {/* Formatação da data do cabeçalho do dia */}
+              {format(toZonedTime(parseISO(dateKey), BRAZIL_TIMEZONE), 'EEEE, dd \'de\' MMMM \'de\' yyyy', { locale: ptBR })}
             </h3>
             <ul className={styles.punchList}>
               {groupedRecords[dateKey]
@@ -83,12 +102,17 @@ export default function PunchHistoryTable({
                   const isEditing = editingRecordId === record.id;
                   const currentRecord = isEditing && editedRecordData ? editedRecordData : record;
 
-                  const dateValue = currentRecord.timestamp instanceof Date
-                    ? currentRecord.timestamp.toISOString().split('T')[0]
-                    : (currentRecord.timestamp_date || '');
-                  const timeValue = currentRecord.timestamp instanceof Date
-                    ? currentRecord.timestamp.toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit', second: '2-digit', hour12: false })
-                    : (currentRecord.timestamp_time || '');
+                  // Converte o timestamp para o fuso horário local (Brasil) para exibição nos inputs e no modo de visualização
+                  const zonedTimestamp = toZonedTime(record.timestamp, BRAZIL_TIMEZONE);
+
+                  const dateValue = isEditing
+                    ? (currentRecord.timestamp_date || '') // Se estiver editando, usa o estado de edição
+                    : format(zonedTimestamp, 'yyyy-MM-dd'); // Caso contrário, formata a data do timestamp original
+
+                  const timeValue = isEditing
+                    ? (currentRecord.timestamp_time || '') // Se estiver editando, usa o estado de edição
+                    : format(zonedTimestamp, 'HH:mm:ss'); // Caso contrário, formata a hora do timestamp original
+
 
                   return (
                     <li
@@ -127,17 +151,17 @@ export default function PunchHistoryTable({
                         </div>
                       ) : (
                         // Conteúdo normal quando não está editando
-                        <div className={styles.displayContent}> {/* Novo wrapper para o conteúdo visualizável */}
+                        <div className={styles.displayContent}>
                           <div className={styles.punchDetails}>
                             <span className={styles.punchType}>
                               {getTypeIcon(record.type)}
                               {getTypeName(record.type)}
                             </span>
                             <span className={styles.punchTime}>
-                              {record.timestamp.toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' })}
+                              {/* Formatação da hora no modo de visualização */}
+                              {format(zonedTimestamp, 'HH:mm', { locale: ptBR })}
                             </span>
                           </div>
-                          {/* O botão de edição foi removido daqui */}
                         </div>
                       )}
                     </li>
