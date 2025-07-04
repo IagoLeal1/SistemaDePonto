@@ -15,6 +15,8 @@ interface BatidaDePonto {
   userId: string;
   timestamp: Date;
   type: 'entrada' | 'inicio_almoco' | 'fim_almoco' | 'saida';
+  timestamp_date?: string; // Propriedade opcional para a data formatada
+  timestamp_time?: string; // Propriedade opcional para a hora formatada
 }
 
 interface PunchHistoryTableProps {
