@@ -5,22 +5,22 @@
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  height: 100vh;
+  min-height: 100vh; /* Usar min-height para permitir que o conteúdo empurre a altura se necessário */
   padding: 20px;
-  /* Cor de fundo da página: Usando um verde claro da paleta */
-  background-color: #87d1af; /* Cor principal de apoio, verde claro */
-  font-family: 'Roboto', sans-serif; /* Usando a tipografia de apoio */
+  background-color: #87d1af;
+  font-family: 'Roboto', sans-serif;
   text-align: center;
   box-sizing: border-box;
-  overflow: hidden;
+  overflow-x: hidden; /* Evita rolagem horizontal indesejada */
+  width: 100%; /* Garante que o container ocupe toda a largura */
 }
 
 .mainContentWrapper {
-  background-color: #ffffff; /* Fundo branco do card */
+  background-color: #ffffff;
   padding: 30px;
   border-radius: 16px;
   box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
-  width: 100%;
+  width: 95%; /* Ajustado para ocupar mais espaço em telas maiores também */
   max-width: 650px;
   display: flex;
   flex-direction: column;
@@ -31,20 +31,21 @@
 }
 
 .title {
-  color: #16375b; /* Azul escuro do logo */
+  color: #16375b;
   margin-bottom: 10px;
   font-size: 2.5em;
-  font-family: 'Nirmala Regular', sans-serif; /* Usando a tipografia do logo */
+  font-family: 'Nirmala Regular', sans-serif;
+  word-break: break-word; /* Garante que títulos longos quebrem a linha */
 }
 
 .welcomeMessage {
-  color: #291b25; /* Um cinza escuro da paleta de apoio */
+  color: #291b25;
   margin-bottom: 0;
   font-size: 1.2em;
 }
 
 .lastBatidaInfo {
-  background-color: #fcfcfc; /* Um branco levemente diferente para um destaque sutil */
+  background-color: #fcfcfc;
   padding: 20px;
   border-radius: 8px;
   box-shadow: 0 2px 10px rgba(0, 0, 0, 0.08);
@@ -53,47 +54,55 @@
   align-items: center;
   gap: 15px;
   font-size: 1.1em;
-  color: #291b25; /* Texto cinza escuro */
+  color: #291b25;
   width: 100%;
   max-width: 500px;
   justify-content: center;
-  border: 1px solid #eef3f6; /* Uma borda muito clara da paleta de apoio */
+  border: 1px solid #eef3f6;
+  text-align: center; /* Centraliza o texto dentro do bloco */
 
   .infoIcon {
-    color: #1dac8c; /* Um dos verdes vibrantes da paleta principal */
+    color: #1dac8c;
     font-size: 1.5em;
+    flex-shrink: 0; /* Impede que o ícone encolha */
+  }
+
+  p {
+    margin: 0; /* Remove margem padrão de parágrafo */
+    word-break: break-word; /* Permite que o texto quebre em várias linhas */
   }
 }
 
-.errorMessage {
-  color: #b7133f; /* Um vermelho da paleta de apoio para erro */
-  background-color: #fcebeb; /* Um fundo muito claro para a mensagem de erro */
-  border: 1px solid #b7133f;
+.errorMessage,
+.successMessage {
   padding: 10px;
   border-radius: 5px;
   margin-bottom: 0;
   width: 100%;
   max-width: 500px;
+  text-align: center; /* Centraliza o texto */
+  box-sizing: border-box; /* Garante que padding não adicione largura extra */
+}
+
+.errorMessage {
+  color: #b7133f;
+  background-color: #fcebeb;
+  border: 1px solid #b7133f;
 }
 
 .successMessage {
-  color: #1dac8c; /* Um verde da paleta principal para sucesso */
-  background-color: #e6f7e8; /* Um fundo muito claro para a mensagem de sucesso */
+  color: #1dac8c;
+  background-color: #e6f7e8;
   border: 1px solid #1dac8c;
-  padding: 10px;
-  border-radius: 5px;
-  margin-bottom: 0;
-  width: 100%;
-  max-width: 500px;
 }
 
 .buttonGroup {
   display: flex;
-  flex-wrap: wrap;
+  flex-wrap: wrap; /* Permite que os itens quebrem para a próxima linha */
   gap: 15px;
   margin-bottom: 0;
   justify-content: center;
-  width: 100%;
+  width: 100%; /* Ocupa toda a largura disponível no wrapper */
   max-width: 600px;
 }
 
@@ -108,8 +117,9 @@
   font-weight: bold;
   cursor: pointer;
   transition: background-color 0.3s ease, transform 0.2s ease;
-  color: white; /* Texto branco para contraste com fundos coloridos */
-  flex-grow: 1;
+  color: white;
+  flex-grow: 1; /* Permite que os botões cresçam para preencher o espaço */
+  min-width: 180px; /* Garante um tamanho mínimo para botões em telas maiores */
 
   .buttonIcon {
     margin-right: 10px;
@@ -125,33 +135,33 @@
 }
 
 .entradaButton {
-  background-color: #1dac8c; /* Verde mais vibrante da paleta principal */
+  background-color: #1dac8c;
   &:hover:not(:disabled) {
-    background-color: #1da7ac; /* Um verde ligeiramente diferente para o hover */
+    background-color: #1da7ac;
     transform: scale(1.02);
   }
 }
 
 .inicio_almocoButton,
 .fim_almocoButton {
-  background-color: #e68b00; /* Laranja da paleta principal */
-  color: white; /* Texto branco para contraste */
+  background-color: #e68b00;
+  color: white;
   &:hover:not(:disabled) {
-    background-color: #ff8d69; /* Um laranja mais claro para o hover */
+    background-color: #ff8d69;
     transform: scale(1.02);
   }
 }
 
 .saidaButton {
-  background-color: #b54c2b; /* Marrom avermelhado da paleta principal */
+  background-color: #b54c2b;
   &:hover:not(:disabled) {
-    background-color: #b7133f; /* Vermelho mais forte da paleta de apoio para hover */
+    background-color: #b7133f;
     transform: scale(1.02);
   }
 }
 
 .logoutButton {
-  background-color: #6c757d; /* Mantendo um cinza neutro para o logout, ou poderíamos usar #291b25 */
+  background-color: #6c757d;
   color: white;
   padding: 12px 25px;
   border: none;
@@ -165,9 +175,11 @@
   justify-content: center;
   gap: 10px;
   margin-top: 25px;
+  width: 100%; /* Ocupa toda a largura disponível no wrapper */
+  max-width: 300px; /* Limita a largura máxima para não ficar muito grande em desktops */
 
   &:hover:not(:disabled) {
-    background-color: #291b25; /* Cinza escuro da paleta de apoio para hover */
+    background-color: #291b25;
   }
 
   &:disabled {
@@ -180,32 +192,102 @@
   }
 }
 
-/* Responsividade básica */
+/* Responsividade para telas menores */
 @media (max-width: 768px) {
+  .pontoContainer {
+    padding: 15px; /* Reduz o padding geral em telas menores */
+  }
+
   .mainContentWrapper {
     padding: 20px;
     border-radius: 12px;
-    gap: 20px;
+    gap: 15px; /* Reduz o espaçamento entre os elementos */
     margin: 20px auto;
+    width: 98%; /* Ocupa quase toda a largura em telas menores */
+    max-width: 500px; /* Limita para não ficar muito esticado em tablets */
   }
-  .buttonGroup {
-    flex-direction: column;
-    width: 90%;
-    max-width: unset;
-  }
-  .pontoButton {
-    min-width: unset;
-    flex-basis: 100%;
-    max-width: unset;
-  }
+
   .title {
-    font-size: 2em;
+    font-size: 2em; /* Reduz o tamanho do título */
   }
+
   .welcomeMessage {
-    font-size: 1em;
+    font-size: 1em; /* Reduz o tamanho da mensagem de boas-vindas */
   }
-  .lastBatidaInfo, .errorMessage, .successMessage {
+
+  .lastBatidaInfo,
+  .errorMessage,
+  .successMessage {
+    padding: 12px;
+    font-size: 0.95em; /* Ajusta o tamanho da fonte */
+    max-width: 100%; /* Garante que ocupem 100% da largura do wrapper */
+  }
+  
+  .lastBatidaInfo {
+    flex-direction: column; /* Ícone e texto em colunas em telas muito pequenas */
+    gap: 5px;
+    .infoIcon {
+      margin-bottom: 5px;
+    }
+  }
+
+
+  .buttonGroup {
+    flex-direction: column; /* Botões empilham em telas menores */
+    width: 100%; /* Ocupa toda a largura do wrapper */
+    max-width: unset; /* Remove max-width para permitir que se estiquem */
+  }
+
+  .pontoButton {
+    min-width: unset; /* Remove min-width para permitir que encolham */
+    flex-basis: 100%; /* Cada botão ocupa 100% da largura disponível */
+    max-width: unset; /* Remove max-width */
+    padding: 12px 20px; /* Ajusta o padding */
+    font-size: 1em; /* Ajusta o tamanho da fonte */
+  }
+
+  .logoutButton {
+    padding: 10px 20px;
+    font-size: 0.95em;
+    width: 100%; /* Ocupa toda a largura do wrapper */
+    max-width: unset; /* Remove max-width */
+  }
+}
+
+/* Responsividade para telas muito pequenas (ex: celulares antigos) */
+@media (max-width: 480px) {
+  .pontoContainer {
+    padding: 10px;
+  }
+
+  .mainContentWrapper {
     padding: 15px;
-    font-size: 1em;
+    gap: 10px;
+    margin: 15px auto;
+  }
+
+  .title {
+    font-size: 1.8em;
+  }
+
+  .welcomeMessage {
+    font-size: 0.9em;
+  }
+
+  .lastBatidaInfo,
+  .errorMessage,
+  .successMessage {
+    font-size: 0.9em;
+    padding: 10px;
+  }
+  
+  .pontoButton {
+    font-size: 0.95em;
+    padding: 10px 15px;
+  }
+  
+  .logoutButton {
+    font-size: 0.9em;
+    padding: 8px 15px;
   }
 }
