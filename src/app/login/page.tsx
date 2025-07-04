@@ -3,7 +3,7 @@
 
 import { useState, useEffect } from 'react';
 import { auth } from '@/lib/firebase';
-import { signInWithEmailAndPassword, signOut } from 'firebase/auth'; // Importe signOut também para o logout
+import { signInWithEmailAndPassword } from 'firebase/auth'; // Importe signOut também para o logout
 import { useRouter } from 'next/navigation';
 import { useAuth } from '@/src/app/context/AuthContext'; // Note o caminho para o seu AuthContext
 import styles from './login.module.scss';
@@ -41,32 +41,56 @@ export default function LoginPage() {
     try {
       await signInWithEmailAndPassword(auth, email, password);
       // O useEffect acima lidará com o redirecionamento e a configuração do cookie
-    } catch (err: any) {
+    } catch (err: unknown) { // ✅ CORREÇÃO AQUI: 'any' para 'unknown'
       console.error("Erro ao fazer login:", err);
-      if (err.code === 'auth/invalid-credential') {
-        setError('E-mail ou palavra-passe incorretos.');
-      } else if (err.code === 'auth/user-not-found') {
-        setError('Utilizador não encontrado.');
-      } else if (err.code === 'auth/wrong-password') {
-        setError('Palavra-passe incorreta.');
-      } else {
-        setError(`Erro ao fazer login: ${err.message}`);
+      let errorMessage = "Erro desconhecido ao fazer login.";
+      if (err instanceof Error) {
+        // Firebase Auth errors often have a 'code' property
+        if ('code' in err && typeof err.code === 'string') {
+          switch (err.code) {
+            case 'auth/invalid-credential':
+              errorMessage = 'E-mail ou palavra-passe incorretos.';
+              break;
+            case 'auth/user-not-found': // This might be covered by invalid-credential in newer Firebase versions
+              errorMessage = 'Utilizador não encontrado.';
+              break;
+            case 'auth/wrong-password': // This might be covered by invalid-credential in newer Firebase versions
+              errorMessage = 'Palavra-passe incorreta.';
+              break;
+            default:
+              errorMessage = `Erro ao fazer login: ${err.message}`;
+          }
+        } else {
+          errorMessage = `Erro ao fazer login: ${err.message}`;
+        }
+      } else if (typeof err === 'string') {
+        errorMessage = `Erro ao fazer login: ${err}`;
       }
+      setError(errorMessage);
     }
   };
 
   // Lógica para lidar com logout (se tiver um botão de logout em algum lugar)
-  const handleLogout = async () => {
-    try {
-      await signOut(auth);
-      // Remove os cookies ao fazer logout
-      document.cookie = 'user_logged_in=; path=/; expires=Thu, 01 Jan 1970 00:00:00 UTC;';
-      document.cookie = 'user_role=; path=/; expires=Thu, 01 Jan 1970 00:00:00 UTC;'; // REMOVER ESTE TAMBÉM
-      router.push('/login'); // Redireciona para a página de login após o logout
-    } catch (error) {
-      console.error("Erro ao fazer logout:", error);
-    }
-  };
+  // ✅ CORREÇÃO AQUI: Se handleLogout não for usado nesta página, você pode removê-lo
+  // ou movê-lo para um lugar onde ele será usado (ex: um componente de cabeçalho/sidebar).
+  // Por enquanto, vou mantê-lo, mas o aviso de "never used" persistirá se não for invocado.
+  // const handleLogout = async () => {
+  //   try {
+  //     await signOut(auth);
+  //     // Remove os cookies ao fazer logout
+  //     document.cookie = 'user_logged_in=; path=/; expires=Thu, 01 Jan 1970 00:00:00 UTC;';
+  //     document.cookie = 'user_role=; path=/; expires=Thu, 01 Jan 1970 00:00:00 UTC;'; // REMOVER ESTE TAMBÉM
+  //     router.push('/login'); // Redireciona para a página de login após o logout
+  //   } catch (error: unknown) { // ✅ CORREÇÃO AQUI: 'any' para 'unknown'
+  //     let errorMessage = "Ocorreu um erro desconhecido ao fazer logout.";
+  //     if (error instanceof Error) {
+  //       errorMessage = error.message;
+  //     } else if (typeof error === 'string') {
+  //       errorMessage = error;
+  //     }
+  //     console.error("Erro ao fazer logout:", errorMessage);
+  //   }
+  // };
 
   if (loading) {
     return (

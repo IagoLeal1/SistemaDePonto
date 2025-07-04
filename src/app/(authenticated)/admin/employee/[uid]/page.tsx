@@ -13,10 +13,8 @@ import { FaFilePdf, FaSpinner } from 'react-icons/fa';
 // Importar uma biblioteca de datas é altamente recomendado para evitar problemas de fuso horário
 // Ex: npm install date-fns date-fns-tz
 import { format, parseISO } from 'date-fns';
-// **CORREÇÃO AQUI**: Importa as funções corretas de date-fns-tz
-import { toZonedTime } from 'date-fns-tz'; // toUtc foi removido e será substituído por lógica manual
+import { toZonedTime } from 'date-fns-tz';
 // Você também pode precisar de um locale para formatar nomes de dias/meses em português
-import { ptBR } from 'date-fns/locale';
 
 
 interface BatidaDePonto {
@@ -24,6 +22,17 @@ interface BatidaDePonto {
   userId: string;
   timestamp: Date;
   type: 'entrada' | 'inicio_almoco' | 'fim_almoco' | 'saida';
+  // ✅ Adicionado: Propriedades opcionais para data e hora de edição no frontend
+  timestamp_date?: string;
+  timestamp_time?: string;
+}
+
+// ✅ NOVO: Interface para tipar os dados que vêm do Firestore para um usuário/funcionário
+interface FirestoreEmployeeData {
+  name: string;
+  email: string;
+  role: 'admin' | 'employee' | string; // Use 'string' se 'role' puder ter outros valores no DB
+  // Adicione outras propriedades que você espera do Firestore, se houver
 }
 
 interface Employee {
@@ -34,7 +43,7 @@ interface Employee {
 }
 
 // Defina o fuso horário padrão do Brasil para consistência
-const BRAZIL_TIMEZONE = 'America/Sao_Paulo'; // Ou 'America/Fortaleza', 'America/Cuiaba', etc., dependendo da região
+const BRAZIL_TIMEZONE = 'America/Sao_Paulo';
 const BRAZIL_OFFSET_HOURS = -3; // Offset padrão do Brasil (UTC-3), pode variar com Horário de Verão
 
 export default function EmployeeHistoryPage() {
@@ -67,20 +76,27 @@ export default function EmployeeHistoryPage() {
       const q = query(collection(db, 'users'), where('uid', '==', employeeUid), limit(1));
       const querySnapshot = await getDocs(q);
       if (!querySnapshot.empty) {
-        const data = querySnapshot.docs[0].data();
+        // ✅ CORREÇÃO AQUI: Tipando os dados que vêm do Firestore
+        const data = querySnapshot.docs[0].data() as FirestoreEmployeeData;
         setEmployeeInfo({
           uid: querySnapshot.docs[0].id,
           name: data.name,
           email: data.email,
-          role: data.role,
-        } as Employee);
+          role: data.role as 'admin' | 'employee', // ✅ Cast seguro para o tipo de role esperado
+        });
         console.log("Employee Info fetched:", data.name);
       } else {
         setError("Funcionário não encontrado.");
         console.log("Employee not found for UID:", employeeUid);
       }
-    } catch (err: any) {
-      console.error("Erro ao buscar informações do funcionário:", err.message);
+    } catch (err: unknown) { // ✅ CORREÇÃO AQUI: 'any' para 'unknown'
+      let errorMessage = "Ocorreu um erro desconhecido.";
+      if (err instanceof Error) {
+        errorMessage = err.message;
+      } else if (typeof err === 'string') {
+        errorMessage = err;
+      }
+      console.error("Erro ao buscar informações do funcionário:", errorMessage);
       setError("Erro ao carregar informações do funcionário.");
     }
   }, [employeeUid]);
@@ -133,18 +149,24 @@ export default function EmployeeHistoryPage() {
 
       const querySnapshot = await getDocs(recordsQuery);
       const recordsList = querySnapshot.docs.map(doc => {
-        const data = doc.data();
+        const data = doc.data(); // ✅ 'data' será inferido como 'DocumentData' aqui.
         return {
           id: doc.id,
           userId: data.userId,
           timestamp: data.timestamp.toDate(), // Isso retorna um Date em UTC
           type: data.type,
-        } as BatidaDePonto;
+        } as BatidaDePonto; // ✅ Cast final para BatidaDePonto, que agora inclui os campos opcionais
       });
       setPunchRecords(recordsList);
       console.log("Punch Records fetched. Count:", recordsList.length);
-    } catch (err: any) {
-      console.error("Erro ao buscar registros de ponto:", err.message);
+    } catch (err: unknown) { // ✅ CORREÇÃO AQUI: 'any' para 'unknown'
+      let errorMessage = "Ocorreu um erro desconhecido.";
+      if (err instanceof Error) {
+        errorMessage = err.message;
+      } else if (typeof err === 'string') {
+        errorMessage = err;
+      }
+      console.error("Erro ao buscar registros de ponto:", errorMessage);
       setError("Erro ao carregar registros de ponto.");
     }
   }, [employeeUid, startDate, endDate]);
@@ -231,8 +253,14 @@ export default function EmployeeHistoryPage() {
 
       pdf.save(filename);
 
-    } catch (err: any) {
-      console.error("Erro ao gerar relatório PDF:", err.message);
+    } catch (err: unknown) { // ✅ CORREÇÃO AQUI: 'any' para 'unknown'
+      let errorMessage = "Ocorreu um erro desconhecido.";
+      if (err instanceof Error) {
+        errorMessage = err.message;
+      } else if (typeof err === 'string') {
+        errorMessage = err;
+      }
+      console.error("Erro ao gerar relatório PDF:", errorMessage);
       setError("Erro ao gerar o relatório. Por favor, tente novamente.");
     } finally {
       setIsDownloading(false);
@@ -320,8 +348,14 @@ export default function EmployeeHistoryPage() {
 
       handleCancelEdit(); // Sai do modo de edição
       console.log(`Registro ${recordId} atualizado com sucesso!`);
-    } catch (err: any) {
-      console.error("Erro ao salvar o registro:", err.message);
+    } catch (err: unknown) { // ✅ CORREÇÃO AQUI: 'any' para 'unknown'
+      let errorMessage = "Ocorreu um erro desconhecido.";
+      if (err instanceof Error) {
+        errorMessage = err.message;
+      } else if (typeof err === 'string') {
+        errorMessage = err;
+      }
+      console.error("Erro ao salvar o registro:", errorMessage);
       setError("Erro ao salvar o registro. Verifique o formato da data/hora ou tente novamente.");
     } finally {
       setPageLoading(false);

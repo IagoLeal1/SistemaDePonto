@@ -3,19 +3,21 @@
 
 import { useState, useEffect, useCallback } from 'react';
 import { useAuth } from '@/src/app/context/AuthContext';
-import { db } from '@/lib/firebase';
-import { collection, addDoc, serverTimestamp, query, where, getDocs, orderBy, limit, Timestamp } from 'firebase/firestore'; // Import Timestamp
+// ✅ CORREÇÃO AQUI: Garanta que 'auth' está importado de '@/lib/firebase'
+import { auth, db } from '@/lib/firebase'; 
+import { collection, addDoc, serverTimestamp, query, where, getDocs, orderBy, limit, Timestamp } from 'firebase/firestore';
 import { useRouter } from 'next/navigation';
 import styles from './ponto.module.scss';
 
 // Importar ícones
-import { FaClock, FaSignInAlt, FaSignOutAlt, FaUtensils, FaCalendarAlt, FaDoorOpen } from 'react-icons/fa';
-import { getAuth, signOut } from 'firebase/auth';
+import { FaSignInAlt, FaSignOutAlt, FaUtensils, FaDoorOpen, FaClock } from 'react-icons/fa';
+// ✅ CORREÇÃO AQUI: Mantenha apenas 'signOut' se 'auth' já vem de '@/lib/firebase'
+import { signOut } from 'firebase/auth'; 
 
 // Importar date-fns para formatação e date-fns-tz para fuso horário
-import { format, parseISO, startOfDay, endOfDay } from 'date-fns'; // Adicionado startOfDay, endOfDay
-import { toZonedTime } from 'date-fns-tz'; // zonedTimeToUtc foi removido e será substituído por lógica manual
-import { ptBR } from 'date-fns/locale'; // Para nomes de dias/meses em português
+import { format, startOfDay, endOfDay } from 'date-fns';
+import { toZonedTime } from 'date-fns-tz';
+import { ptBR } from 'date-fns/locale';
 
 // Tipos de batida de ponto
 type BatidaType = 'entrada' | 'inicio_almoco' | 'fim_almoco' | 'saida';
@@ -30,7 +32,6 @@ interface BatidaDePonto {
 
 // Defina o fuso horário padrão do Brasil para consistência
 const BRAZIL_TIMEZONE = 'America/Sao_Paulo';
-// Offset padrão do Brasil (UTC-3). Pode variar com Horário de Verão, mas para o erro de build, é um workaround.
 const BRAZIL_OFFSET_HOURS = -3; 
 
 
@@ -41,7 +42,7 @@ export default function PontoPage() {
   const [error, setError] = useState<string | null>(null);
   const [message, setMessage] = useState<string | null>(null);
   const [isPunching, setIsPunching] = useState(false);
-  const [hasEnteredToday, setHasEnteredToday] = useState(false); // NOVO ESTADO: Para verificar se já bateu entrada hoje
+  const [hasEnteredToday, setHasEnteredToday] = useState(false);
 
   // Mapeamento da próxima batida esperada
   const nextExpectedPunch: Record<BatidaType | 'nenhuma', BatidaType> = {
@@ -52,7 +53,6 @@ export default function PontoPage() {
     'saida': 'entrada',
   };
 
-  // Função para buscar a última batida do usuário
   const fetchLastBatida = useCallback(async () => {
     if (!currentUser?.uid) return;
 
@@ -66,24 +66,28 @@ export default function PontoPage() {
       );
       const querySnapshot = await getDocs(q);
       if (!querySnapshot.empty) {
-        const doc = querySnapshot.docs[0];
-        const data = doc.data();
+        const docData = querySnapshot.docs[0].data(); // Pega os dados do documento
         setLastBatida({
-          id: doc.id,
-          userId: data.userId,
-          timestamp: data.timestamp.toDate(), // Retorna um Date em UTC
-          type: data.type,
+          id: querySnapshot.docs[0].id,
+          userId: docData.userId,
+          timestamp: docData.timestamp.toDate(),
+          type: docData.type,
         } as BatidaDePonto);
       } else {
         setLastBatida(null);
       }
-    } catch (err) {
-      console.error("Erro ao buscar última batida:", err);
+    } catch (err: unknown) {
+      let errorMessage = "Ocorreu um erro desconhecido.";
+      if (err instanceof Error) {
+        errorMessage = err.message;
+      } else if (typeof err === 'string') {
+        errorMessage = err;
+      }
+      console.error("Erro ao buscar última batida:", errorMessage);
       setError("Erro ao carregar seu status de ponto.");
     }
   }, [currentUser]);
 
-  // NOVA FUNÇÃO: Verifica se já existe uma batida de 'entrada' para o dia atual
   const checkIfEnteredToday = useCallback(async () => {
     if (!currentUser?.uid) {
       setHasEnteredToday(false);
@@ -92,16 +96,17 @@ export default function PontoPage() {
 
     try {
       const now = new Date();
-      // Obtém o início e fim do dia atual no fuso horário do Brasil (como objetos Date locais)
-      const startOfTodayLocal = startOfDay(toZonedTime(now, BRAZIL_TIMEZONE));
-      const endOfTodayLocal = endOfDay(toZonedTime(now, BRAZIL_TIMEZONE));
+      // ✅ CORREÇÃO AQUI: Garanta que as variáveis são declaradas antes de serem usadas nos cálculos de offset.
+      // E que as chamadas a date-fns estejam corretas.
+      const startOfTodayZoned = toZonedTime(now, BRAZIL_TIMEZONE);
+      const startOfTodayLocal = startOfDay(startOfTodayZoned); // Início do dia no fuso horário do Brasil
 
-      // **WORKAROUND para zonedTimeToUtc:** Converte as datas locais (que representam o fuso horário do Brasil) para UTC para a query do Firestore.
-      // Calcula a diferença de offset entre o fuso horário do browser e o fuso horário do Brasil (UTC-3).
-      // Adiciona/subtrai essa diferença para "mover" a data local para a perspectiva do fuso horário do Brasil.
-      
-      const browserOffsetMinutesStart = startOfTodayLocal.getTimezoneOffset(); // Diferença em minutos entre UTC e fuso horário local do browser
-      const browserOffsetHoursStart = -browserOffsetMinutesStart / 60; // Converte para horas e inverte o sinal (ex: 3)
+      const endOfTodayZoned = toZonedTime(now, BRAZIL_TIMEZONE);
+      const endOfTodayLocal = endOfDay(endOfTodayZoned); // Fim do dia no fuso horário do Brasil
+
+      // Converte as datas locais para UTC para a query do Firestore
+      const browserOffsetMinutesStart = startOfTodayLocal.getTimezoneOffset();
+      const browserOffsetHoursStart = -browserOffsetMinutesStart / 60;
       const differenceHoursStart = BRAZIL_OFFSET_HOURS - browserOffsetHoursStart; 
       const startOfTodayUtc = new Date(startOfTodayLocal.getTime() + (differenceHoursStart * 60 * 60 * 1000));
 
@@ -116,31 +121,34 @@ export default function PontoPage() {
         where('type', '==', 'entrada'),
         where('timestamp', '>=', Timestamp.fromDate(startOfTodayUtc)),
         where('timestamp', '<=', Timestamp.fromDate(endOfTodayUtc)),
-        limit(1) // Só precisamos saber se existe UMA entrada para o dia
+        limit(1)
       );
 
       const querySnapshot = await getDocs(q);
-      setHasEnteredToday(!querySnapshot.empty); // Define como true se encontrar alguma entrada
-    } catch (err) {
-      console.error("Erro ao verificar entrada de hoje:", err);
-      setHasEnteredToday(false); // Em caso de erro, assume que não bateu
+      setHasEnteredToday(!querySnapshot.empty);
+    } catch (err: unknown) {
+      let errorMessage = "Ocorreu um erro desconhecido.";
+      if (err instanceof Error) {
+        errorMessage = err.message;
+      } else if (typeof err === 'string') {
+        errorMessage = err;
+      }
+      console.error("Erro ao verificar entrada de hoje:", errorMessage);
+      setHasEnteredToday(false);
     }
   }, [currentUser]);
 
-
-  // Efeito para redirecionar se não estiver logado e buscar a última batida e verificar entrada de hoje
   useEffect(() => {
     if (!loading) {
       if (!currentUser) {
         router.push('/login');
       } else {
         fetchLastBatida();
-        checkIfEnteredToday(); // Chama a nova função aqui
+        checkIfEnteredToday();
       }
     }
-  }, [currentUser, loading, router, fetchLastBatida, checkIfEnteredToday]); // Adicionado checkIfEnteredToday às dependências
+  }, [currentUser, loading, router, fetchLastBatida, checkIfEnteredToday]);
 
-  // Função para registrar o ponto
   const handleRegistrarPonto = async (type: BatidaType) => {
     if (!currentUser) {
       setError("Você precisa estar logado para registrar o ponto.");
@@ -148,7 +156,6 @@ export default function PontoPage() {
     }
     if (isPunching) return;
 
-    // NOVA LÓGICA: Impede múltiplas batidas de 'entrada' por dia
     if (type === 'entrada' && hasEnteredToday) {
       setError("Você já registrou uma entrada hoje. Não é possível registrar outra entrada no mesmo dia.");
       return;
@@ -169,41 +176,48 @@ export default function PontoPage() {
     try {
       await addDoc(collection(db, 'batidasDePonto'), {
         userId: currentUser.uid,
-        timestamp: serverTimestamp(), // serverTimestamp() armazena em UTC
+        timestamp: serverTimestamp(),
         type: type,
       });
       setMessage(`Ponto de ${type.replace('_', ' ')} registrado com sucesso!`);
       await fetchLastBatida();
-      // Após uma batida de entrada bem-sucedida, atualiza o estado
       if (type === 'entrada') {
         setHasEnteredToday(true);
       }
-      // Re-verifica para garantir a consistência (útil após qualquer batida)
       checkIfEnteredToday();
-    } catch (err) {
-      console.error(`Erro ao registrar ponto de ${type}:`, err);
+    } catch (err: unknown) {
+      let errorMessage = "Ocorreu um erro desconhecido.";
+      if (err instanceof Error) {
+        errorMessage = err.message;
+      } else if (typeof err === 'string') {
+        errorMessage = err;
+      }
+      console.error(`Erro ao registrar ponto de ${type}:`, errorMessage);
       setError(`Erro ao registrar ponto de ${type}. Por favor, tente novamente.`);
     } finally {
       setIsPunching(false);
     }
   };
 
-  // Função para logout: AGORA LIMPA OS COOKIES
   const handleLogout = async () => {
     try {
-      const authInstance = getAuth();
-      await signOut(authInstance);
-      // Remove os cookies ao fazer logout
+      // ✅ CORREÇÃO AQUI: Use 'auth' diretamente, que já foi importado do '@/lib/firebase'
+      await signOut(auth); 
       document.cookie = 'user_logged_in=; path=/; expires=Thu, 01 Jan 1970 00:00:00 UTC;';
       document.cookie = 'user_role=; path=/; expires=Thu, 01 Jan 1970 00:00:00 UTC;';
       router.push('/login');
-    } catch (err) {
-      console.error("Erro ao fazer logout:", err);
+    } catch (err: unknown) {
+      let errorMessage = "Ocorreu um erro desconhecido.";
+      if (err instanceof Error) {
+        errorMessage = err.message;
+      } else if (typeof err === 'string') {
+        errorMessage = err;
+      }
+      console.error("Erro ao fazer logout:", errorMessage);
       setError("Erro ao fazer logout. Por favor, tente novamente.");
     }
   };
 
-  // Condição de carregamento/redirecionamento
   if (loading || !currentUser) {
     return (
       <div className={styles.loadingContainer}>
@@ -212,12 +226,9 @@ export default function PontoPage() {
     );
   }
 
-  // Determina a próxima batida a ser exibida/habilitada
   const currentExpectedType = lastBatida ? nextExpectedPunch[lastBatida.type] : nextExpectedPunch['nenhuma'];
 
-  // Função auxiliar para renderizar botões condicionalmente
   const renderPontoButton = (type: BatidaType, icon: React.ReactNode, label: string) => {
-    // Desabilita o botão 'entrada' se já houver uma entrada hoje E se for o tipo 'entrada'
     const isButtonEnabled = currentExpectedType === type && !(type === 'entrada' && hasEnteredToday);
     return (
       <button
@@ -232,14 +243,12 @@ export default function PontoPage() {
     );
   };
 
-  // Preparar a exibição da última batida com fuso horário correto
   const lastBatidaFormattedTime = lastBatida?.timestamp
     ? format(toZonedTime(lastBatida.timestamp, BRAZIL_TIMEZONE), 'HH:mm', { locale: ptBR })
     : '';
   const lastBatidaFormattedDate = lastBatida?.timestamp
     ? format(toZonedTime(lastBatida.timestamp, BRAZIL_TIMEZONE), 'dd/MM/yyyy', { locale: ptBR })
     : '';
-
 
   return (
     <div className={styles.pontoContainer}>

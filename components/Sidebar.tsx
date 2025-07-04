@@ -6,6 +6,7 @@ import { useAuth } from '@/src/app/context/AuthContext';
 import { auth } from '@/lib/firebase';
 import { useRouter, usePathname } from 'next/navigation';
 import styles from './Sidebar.module.scss';
+import Image from 'next/image';
 
 // Importar todos os ícones necessários
 import { FaUsers, FaSignOutAlt, FaSignInAlt, FaClock, FaTachometerAlt } from 'react-icons/fa';
@@ -36,7 +37,13 @@ export default function Sidebar() {
       <div className={styles.brandContainer}>
         {/* Usamos um Link aqui para que a logo também seja clicável e leve para a dashboard ou homepage */}
         <Link href={isAdmin ? "/admin/dashboard" : "/ponto"} className={styles.brand}>
-          <img src="/images/logotipo colorido e branco.png" alt="Libélula" className={styles.brandLogo} /> {/* <--- IMAGEM AQUI */}
+          <Image 
+              width={150} 
+              height={50} 
+              src="/images/logo.png" 
+              alt="Logotipo da Libélula" // <-- ADICIONE OU CORRIJA ESTA LINHA
+              className={styles.brandLogo} 
+            />{/* <--- IMAGEM AQUI */}
         </Link>
       </div>
       <nav className={styles.navLinks}>

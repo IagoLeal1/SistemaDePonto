@@ -56,15 +56,31 @@ export default function RegisterPage() {
       setMessage('Cadastro realizado com sucesso! Redirecionando para sua área...');
       // Redirect the new employee to their default page (e.g., '/ponto')
       router.push('/ponto'); // Adjust this route to the employee's main page
-    } catch (err: any) {
+    } catch (err: unknown) { // ✅ CORREÇÃO AQUI: 'any' para 'unknown'
       console.error("Erro ao registrar:", err);
-      if (err.code === 'auth/email-already-in-use') {
-        setError('Este e-mail já está em uso.');
-      } else if (err.code === 'auth/weak-password') {
-        setError('A senha é muito fraca.');
-      } else {
-        setError(`Erro ao registrar: ${err.message}`);
+      let errorMessage = "Erro desconhecido ao registrar.";
+
+      // ✅ CORREÇÃO AQUI: Verificação de tipo para acessar propriedades do erro
+      if (err instanceof Error) {
+        // Firebase Auth errors often have a 'code' property
+        if ('code' in err && typeof err.code === 'string') {
+          switch (err.code) {
+            case 'auth/email-already-in-use':
+              errorMessage = 'Este e-mail já está em uso.';
+              break;
+            case 'auth/weak-password':
+              errorMessage = 'A senha é muito fraca.';
+              break;
+            default:
+              errorMessage = `Erro ao registrar: ${err.message}`;
+          }
+        } else {
+          errorMessage = `Erro ao registrar: ${err.message}`;
+        }
+      } else if (typeof err === 'string') {
+        errorMessage = `Erro ao registrar: ${err}`;
       }
+      setError(errorMessage);
     } finally {
       setIsLoading(false); // Stop loading
     }
