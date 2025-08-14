@@ -1,0 +1,146 @@
+/* components/Header.module.scss */
+@import "styles/variables"; // Mantenha a importação das suas variáveis
+
+.header {
+  // --- De Vertical para Horizontal ---
+  width: 100%;
+  height: 70px; // Altura fixa para o header
+  padding: 0 30px; // Espaçamento nas laterais
+  background-color: $color-dark-blue;
+  color: $color-white;
+  font-family: 'Roboto', sans-serif;
+  
+  // --- A Mágica do Flexbox ---
+  display: flex;
+  align-items: center; // Alinha todos os itens verticalmente ao centro
+  justify-content: space-between; // Empurra os grupos para as extremidades
+
+  border-bottom: 1px solid rgba($color-white, 0.15);
+  box-shadow: 0 3px 10px rgba(0, 0, 0, 0.1);
+  position: sticky;
+  top: 0;
+  z-index: 1001;
+}
+
+// --- Grupos de Alinhamento (Esquerda e Direita) ---
+.navGroup {
+  display: flex;
+  align-items: center;
+  gap: 40px; // Espaço entre a logo e os links
+}
+
+.userActions {
+  display: flex;
+  align-items: center;
+}
+
+// --- Estilos da Marca (Logo) ---
+.brand {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  text-decoration: none;
+  color: $color-white;
+}
+
+.brandLogo {
+  height: 45px; // Altura da logo ajustada para o header
+  width: auto;
+}
+
+// --- Links de Navegação ---
+.navLinks {
+  display: flex;
+  align-items: center;
+  gap: 25px; // Espaço entre os itens de navegação
+}
+
+.navItem {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  color: rgba($color-white, 0.75);
+  text-decoration: none;
+  font-size: 1em;
+  padding: 24px 0; // Padding vertical para aumentar a área de clique
+  position: relative; // Necessário para o indicador ::after
+  transition: color 0.2s ease;
+
+  &:hover {
+    color: $color-white;
+  }
+
+  // --- Novo Estilo para Link Ativo ---
+  &.active {
+    color: $primary-color; // Usando sua cor primária para o item ativo
+    font-weight: 600;
+
+    .icon {
+      color: $primary-color;
+    }
+
+    // Adiciona uma linha inferior para indicar o item ativo
+    &::after {
+      content: '';
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      width: 100%;
+      height: 3px;
+      background-color: $primary-color;
+      border-radius: 2px;
+    }
+  }
+}
+
+.icon {
+  font-size: 1.2em;
+  color: rgba($color-white, 0.8);
+  transition: color 0.2s ease;
+}
+
+.navItemText {
+  white-space: nowrap; // Impede a quebra de linha do texto
+}
+
+// --- Botão de Logout ---
+.logoutButton {
+  background-color: transparent; // Fundo transparente para integrar ao header
+  color: rgba($color-white, 0.8);
+  padding: 8px 12px;
+  border: 1px solid rgba($color-white, 0.3);
+  border-radius: 8px;
+  cursor: pointer;
+  font-size: 0.9em;
+  font-weight: 600;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  transition: all 0.2s ease;
+
+  &:hover {
+    background-color: $danger-color; // Fica vermelho no hover
+    border-color: $danger-color;
+    color: $color-white;
+  }
+}
+
+// --- Responsividade para o Header ---
+@media (max-width: 768px) {
+  .header {
+    padding: 0 15px; // Menos espaçamento lateral
+  }
+
+  .navGroup {
+    gap: 15px;
+  }
+  
+  // Esconde o texto dos links, mostrando apenas os ícones
+  .navItemText, .logoutButtonText {
+    display: none;
+  }
+
+  .brandLogo {
+    height: 35px;
+  }
+}

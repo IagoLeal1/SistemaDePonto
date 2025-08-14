@@ -2,7 +2,7 @@
 // Antigo: components/DashboardLayout.tsx
 'use client';
 
-import Sidebar from '@/components/Sidebar'; // A Sidebar ainda vem de components
+import Sidebar from '@/components/Header'; // A Sidebar ainda vem de components
 import styles from './layout.module.scss'; // AGORA IMPORTA O CSS DESTE PRÓPRIO DIRETÓRIO
 
 interface AuthenticatedLayoutProps { // Renomeado para ser mais claro

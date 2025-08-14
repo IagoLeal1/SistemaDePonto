@@ -10,6 +10,25 @@
   font-family: 'Roboto', sans-serif; /* Usando a tipografia de apoio */
 }
 
+.employeeTitle {
+
+  background-color: #f4f6f8; 
+  color: #334155;
+
+  // --- Espaçamento ---
+  padding: 20px 25px;
+
+  // --- Tipografia (AJUSTADA) ---
+  font-size: 1em;           // <<-- TAMANHO AJUSTADO para ser mais sutil
+  font-weight: 600;
+
+  // --- Detalhes Visuais ---
+  margin-bottom: 25px;
+  border-left: 5px solid $primary-color;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+  border-radius: 8px;
+}
+
 .title {
   color: $color-dark-grey; /* Branco do logo para o título */
   margin-bottom: 10px;

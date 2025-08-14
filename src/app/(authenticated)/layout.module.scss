@@ -10,6 +10,7 @@
   padding: 0;
   z-index: 0; // Este layout pode ter um z-index baixo
   font-family: 'Roboto', sans-serif; /* Usando a tipografia de apoio */
+  flex-direction: column;
 }
 
 .mainContent {

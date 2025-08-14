@@ -10,7 +10,7 @@ import PunchHistoryTable from '@/components/PunchHistoryTable';
 import styles from './employeeHistory.module.scss';
 import { FaFilePdf, FaSpinner } from 'react-icons/fa';
 
-import { format } from 'date-fns';
+import { format, startOfMonth, endOfMonth } from 'date-fns';
 import { toDate, toZonedTime } from 'date-fns-tz';
 import { ptBR } from 'date-fns/locale';
 import html2canvas from 'html2canvas';
@@ -61,8 +61,12 @@ export default function EmployeeHistoryPage() {
   const [pageLoading, setPageLoading] = useState(true);
   const [isDownloading, setIsDownloading] = useState(false);
 
-  const [startDate, setStartDate] = useState<string>('');
-  const [endDate, setEndDate] = useState<string>('');
+  const [startDate, setStartDate] = useState<string>(
+    format(startOfMonth(new Date()), 'yyyy-MM-dd')
+  );
+  const [endDate, setEndDate] = useState<string>(
+    format(endOfMonth(new Date()), 'yyyy-MM-dd')
+  );
 
   const [editingRecordId, setEditingRecordId] = useState<string | null>(null);
   const [editedRecordData, setEditedRecordData] = useState<Partial<BatidaDePonto> & { timestamp_date?: string, timestamp_time?: string } | null>(null);
@@ -242,26 +246,16 @@ export default function EmployeeHistoryPage() {
     }
 
     const loadInitialData = async () => {
-      if (employeeUid) {
-        setPageLoading(true);
-        await fetchEmployeeInfo(employeeUid as string);
-        
-        // Busca os registros de ponto iniciais (sem filtro)
-        const initialRecordsQuery = query(collection(db, 'batidasDePonto'), where('userId', '==', employeeUid), orderBy('timestamp', 'asc'));
-        const querySnapshot = await getDocs(initialRecordsQuery);
-        const recordsList = querySnapshot.docs.map(doc => ({
-          id: doc.id,
-          userId: doc.data().userId,
-          timestamp: (doc.data().timestamp as Timestamp).toDate(),
-          type: doc.data().type,
-        } as BatidaDePonto));
-        setPunchRecords(recordsList);
-        
-        setPageLoading(false);
-      }
-    };
-    
-    loadInitialData();
+  if (employeeUid) {
+      setPageLoading(true);
+        // Primeiro, buscamos as informações do funcionário
+      await fetchEmployeeInfo(employeeUid as string);
+        // Agora, chamamos a função que já usa os filtros de data
+      await fetchPunchRecords(employeeUid as string);
+   setPageLoading(false);
+    }
+ }; 
+   loadInitialData();
   }, [loading, currentUser, isAdmin, employeeUid, router, fetchEmployeeInfo]);
 
   // --- Renderização ---
@@ -274,8 +268,14 @@ export default function EmployeeHistoryPage() {
   
   return (
     <div className={styles.employeeHistoryContainer}>
-      <h2 className={styles.title}>Histórico de Ponto de {employeeInfo?.name || 'Funcionário'}</h2>
-      <p className={styles.subtitle}>Email: {employeeInfo?.email}</p>
+      <div className={styles.employeeTitle}>
+        <h2 className={styles.title}>Histórico de Ponto de {employeeInfo?.name || 'Funcionário'}</h2>
+        <p className={styles.subtitle}>Email: {employeeInfo?.email}</p>
+          <button onClick={handleDownloadPdf} className={styles.downloadReportButton} disabled={isDownloading || dailyData.length === 0}>
+          {isDownloading ? <FaSpinner className={styles.spinnerIcon} /> : <FaFilePdf className={styles.buttonIcon} />}
+          {isDownloading ? 'Gerando PDF...' : 'Baixar Relatório'}
+        </button>
+      </div>
       
       <div className={styles.filterAndDownloadSection}>
         <div className={styles.filterContainer}>
@@ -285,10 +285,6 @@ export default function EmployeeHistoryPage() {
           <input type="date" id="endDate" value={endDate} onChange={e => setEndDate(e.target.value)} className={styles.dateInput} />
           <button onClick={handleApplyFilter} className={styles.applyFilterButton}>Aplicar Filtro</button>
         </div>
-        <button onClick={handleDownloadPdf} className={styles.downloadReportButton} disabled={isDownloading || dailyData.length === 0}>
-          {isDownloading ? <FaSpinner className={styles.spinnerIcon} /> : <FaFilePdf className={styles.buttonIcon} />}
-          {isDownloading ? 'Gerando PDF...' : 'Baixar Relatório'}
-        </button>
       </div>
       
       {dailyData.length === 0 ? (
